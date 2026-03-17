@@ -1,0 +1,28 @@
+{
+  "name": "@jdlanyon/lotus-library",
+  "version": "0.1.0",
+  "description": "collection of clean components",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist"
+  },
+  "author": "Jackson Lanyon <jssdl@protonmail.com> (https://sausytime.com/)",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.24.8",
+    "@babel/core": "^7.24.8",
+    "@babel/preset-env": "^7.24.8",
+    "@babel/preset-react": "^7.24.7"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JDLanyon/lotus-library.git"
+  }
+}
