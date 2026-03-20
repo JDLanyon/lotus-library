@@ -32,7 +32,6 @@ yarn-error.log*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-package-lock.json
 Thumbs.db
 *storybook.log
 storybook-static
