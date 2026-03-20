@@ -4,7 +4,9 @@
   "description": "collection of clean components",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist"
+    "build": "babel src --out-dir dist",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "author": "Jackson Lanyon <jssdl@protonmail.com> (https://sausytime.com/)",
   "license": "ISC",
@@ -12,7 +14,22 @@
     "@babel/cli": "^7.24.8",
     "@babel/core": "^7.24.8",
     "@babel/preset-env": "^7.24.8",
-    "@babel/preset-react": "^7.24.7"
+    "@babel/preset-react": "^7.24.7",
+    "@chromatic-com/storybook": "^5.0.2",
+    "@storybook/addon-a11y": "^10.3.1",
+    "@storybook/addon-docs": "^10.3.1",
+    "@storybook/addon-onboarding": "^10.3.1",
+    "@storybook/addon-vitest": "^10.3.1",
+    "@storybook/react-vite": "^10.3.1",
+    "@vitest/browser-playwright": "^4.1.0",
+    "@vitest/coverage-v8": "^4.1.0",
+    "autoprefixer": "^10.4.27",
+    "playwright": "^1.58.2",
+    "postcss": "^8.5.8",
+    "prop-types": "^15.8.1",
+    "storybook": "^10.3.1",
+    "tailwindcss": "^3.4.19",
+    "vitest": "^4.1.0"
   },
   "peerDependencies": {
     "react": "^18.3.1",

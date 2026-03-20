@@ -34,3 +34,5 @@ yarn-error.log*
 ehthumbs.db
 package-lock.json
 Thumbs.db
+*storybook.log
+storybook-static
