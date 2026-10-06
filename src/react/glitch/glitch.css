@@ -1,0 +1,63 @@
+/**
+ * lotus-library — glitch keyframes + GlitchLink styles
+ */
+:root {
+  --glitch-duration: 80ms;
+  --glitch-chroma-base: 12px;
+  --glitch-blur-base: 1px;
+  --glitch-noise-opacity: 0.4;
+  --glitch-chroma-opacity: 1;
+}
+
+@keyframes glitch-chroma {
+  0%, 100% { opacity: 0; transform: translate(0, 0); }
+  50% { opacity: calc(var(--chroma-intensity, 0) * var(--glitch-chroma-opacity)); }
+}
+
+@keyframes glitch-noise {
+  0%, 100% { opacity: 0; }
+  20%, 80% { opacity: calc(var(--noise-intensity, 0) * 0.5); }
+}
+
+.lotus-animate-glitch-chroma {
+  animation: glitch-chroma var(--glitch-duration) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lotus-animate-glitch-noise {
+  animation: glitch-noise var(--glitch-duration) ease-in-out;
+}
+
+/* ------------------------------------------------------------------ *
+ * GlitchLink
+ *
+ * The text itself is wrapped in <Glitch> (global glitch layer) for the
+ * chromatic-aberration effect. The underline is a clean, minimal bar that
+ * sweeps in from the left on hover and snaps back out on leave.
+ * ------------------------------------------------------------------ */
+.lotus-glitch-link {
+  position: relative;
+  display: inline-block;
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.lotus-glitch-underline {
+  position: absolute;
+  left: 0;
+  bottom: -0.1em;
+  height: 2px;
+  width: 100%;
+  background: var(--lotus-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.lotus-glitch-link:hover .lotus-glitch-underline,
+.lotus-glitch-link:focus-visible .lotus-glitch-underline {
+  transform: scaleX(1);
+}

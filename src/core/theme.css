@@ -1,0 +1,40 @@
+/**
+ * lotus-library — theme tokens
+ *
+ * Import once at the root of the consuming app:  import "lotus-library/style.css";
+ *
+ * Colours are monochromatic by default; colour is reserved for the glitch
+ * effects. Consumers can override these custom properties to re-theme.
+ *
+ * Font: the library ships NO font files. --lotus-font-sans defaults to a
+ * Poppins-first stack; load Poppins yourself (self-host or Google Fonts) or
+ * override this token to use your own typeface.
+ */
+:root {
+  --lotus-primary: #111;
+  --lotus-secondary: #333;
+  --lotus-background: #eee;
+  --lotus-border-color: #ddd;
+  --lotus-radius: 0px;
+  --lotus-font-sans: 'Poppins', 'Inter', 'Noto Sans', 'DejaVu Sans',
+    'Liberation Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="dark"],
+.lotus-dark,
+.dark {
+  --lotus-primary: #eee;
+  --lotus-secondary: #ccc;
+  --lotus-background: #111;
+  --lotus-border-color: #222;
+}
+
+/* Base font for lotus components. */
+:where(.lotus-modal-container, .lotus-btn, .lotus-panel, .lotus-glitch-link) {
+  font-family: var(--lotus-font-sans);
+}
+
+/* Utilities shared by every component. */
+.lotus-reset * {
+  box-sizing: border-box;
+}

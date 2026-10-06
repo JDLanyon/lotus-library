@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent working files (never commit)
+AGENTS.md
+CLAUDE.md
+**/AGENTS.md
+**/CLAUDE.md
+*.agent.md
+.agent/
+.cursor/
+.github/copilot-instructions.md
+debug-storybook.log
+
+# build output
+/dist
+
+# storybook static build
+/storybook-static
