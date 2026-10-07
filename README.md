@@ -10,6 +10,19 @@ package with matching props, class names and behaviour.
 
 ## Install
 
+This package is published to **GitHub Packages** (`npm.pkg.github.com`), which
+requires authentication to install. Add a committed `.npmrc` at your repo root:
+
+```
+@jdlanyon:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_GITHUB_TOKEN}
+```
+
+`NPM_GITHUB_TOKEN` is a classic GitHub PAT with **`read:packages`**, supplied via
+the environment (never commit the token). In GitHub Actions use the built-in
+`${{ secrets.GITHUB_TOKEN }}`. On a fresh machine you can instead run
+`npm login --scope=@jdlanyon --registry=https://npm.pkg.github.com` once.
+
 ```bash
 npm install @jdlanyon/lotus-library
 ```
