@@ -1,6 +1,9 @@
 {
-  "name": "lotus-library",
+  "name": "@jdlanyon/lotus-library",
   "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Reusable Panel, Button and Glitch components for reproducible custom websites (React + Vue 3).",
   "license": "MIT",
   "author": "Jackson Lanyon",

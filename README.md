@@ -1,4 +1,4 @@
-# lotus-library
+# @jdlanyon/lotus-library
 
 Reusable **Panel**, **Button**, **Tags**, **Glitch** and **Modal** components for
 reproducible custom websites. Ships **React** and **Vue 3** bindings from a single
@@ -11,13 +11,13 @@ package with matching props, class names and behaviour.
 ## Install
 
 ```bash
-npm install lotus-library
+npm install @jdlanyon/lotus-library
 ```
 
 Import the stylesheet once at your app root:
 
 ```ts
-import 'lotus-library/style.css';
+import '@jdlanyon/lotus-library/style.css';
 ```
 
 ## Components
@@ -38,8 +38,8 @@ import 'lotus-library/style.css';
 ## React (Next.js)
 
 ```tsx
-import { PanelGrid, Button, Modal, ProjectModal } from 'lotus-library/react';
-import 'lotus-library/style.css';
+import { PanelGrid, Button, Modal, ProjectModal } from '@jdlanyon/lotus-library/react';
+import '@jdlanyon/lotus-library/style.css';
 
 import Link from 'next/link';
 
@@ -63,7 +63,7 @@ when `open` is falsy:
 
 ```tsx
 import { useState } from 'react';
-import { Modal, Button } from 'lotus-library/react';
+import { Modal, Button } from '@jdlanyon/lotus-library/react';
 
 export function Example() {
   const [open, setOpen] = useState(false);
@@ -102,8 +102,8 @@ Register globally with the plugin:
 
 ```ts
 import { createApp } from 'vue';
-import { LotusLibrary } from 'lotus-library/vue';
-import 'lotus-library/style.css';
+import { LotusLibrary } from '@jdlanyon/lotus-library/vue';
+import '@jdlanyon/lotus-library/style.css';
 
 createApp(App).use(LotusLibrary).mount('#app');
 ```
@@ -112,7 +112,7 @@ Or import components directly:
 
 ```vue
 <script setup lang="ts">
-import { PanelGrid, Button, Modal, ProjectModal } from 'lotus-library/vue';
+import { PanelGrid, Button, Modal, ProjectModal } from '@jdlanyon/lotus-library/vue';
 </script>
 
 <template>
@@ -149,6 +149,31 @@ import { PanelGrid, Button, Modal, ProjectModal } from 'lotus-library/vue';
 
 `ProjectModal` adds: `slug`, `repo`, `projectBasePath` (default `/projects`),
 `showRepoAction`, `repoLabel`, `loadingText`, `errorText`, `contentSelector`.
+
+### Panel thumbnails
+
+`Panel` resolves `thumbnail` like this:
+
+- absolute URLs (`https://...`) and root-relative paths (`/img/...`) pass
+  through untouched;
+- otherwise the path is `${thumbnailPath}/${thumbnail}`;
+- with **`thumbnailDefaultsId`** enabled, the panel `id` becomes a path segment:
+  `${thumbnailPath}/${id}/${thumbnail ?? defaultThumbnail}` (default filename
+  `"thumbnail.png"`). This reproduces the common "one thumbnail per panel folder"
+  layout without changing your data shape.
+
+`thumbnailDefaultsId` and `defaultThumbnail` can be set on `PanelGrid` (applies
+to all panels) and overridden per panel:
+
+```tsx
+<PanelGrid
+  basePath="/programming/uni"
+  thumbnailPath="/programming/uni"
+  thumbnailDefaultsId            // -> /programming/uni/<id>/thumbnail.png
+  defaultThumbnail="cover.png"
+  panels={[{ id: 'task-tank' }, { id: 'boids', thumbnail: 'idle.png' }]}
+/>
+```
 
 ## Theming
 

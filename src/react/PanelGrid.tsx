@@ -23,6 +23,8 @@ export function PanelGrid({
   data,
   basePath,
   thumbnailPath,
+  thumbnailDefaultsId,
+  defaultThumbnail,
   linkComponent,
   className = '',
 }: PanelGridProps) {
@@ -39,6 +41,8 @@ export function PanelGrid({
             {...panel}
             basePath={basePath ?? panel.thumbnailPath}
             thumbnailPath={thumbnailPath ?? panel.thumbnailPath}
+            thumbnailDefaultsId={panel.thumbnailDefaultsId ?? thumbnailDefaultsId}
+            defaultThumbnail={panel.defaultThumbnail ?? defaultThumbnail}
             href={panel.href}
             linkComponent={linkComponent}
           />
@@ -49,3 +53,4 @@ export function PanelGrid({
 }
 
 export default PanelGrid;
+

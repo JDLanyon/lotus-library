@@ -50,3 +50,31 @@ export const Grid: StoryObj<typeof PanelGrid> = {
     panels: SAMPLE,
   },
 };
+
+/**
+ * `thumbnailDefaultsId` reproduces the common "one thumbnail per panel folder"
+ * layout: `${thumbnailPath}/${id}/${thumbnail ?? 'thumbnail.png'}`. No per-panel
+ * `thumbnail` is needed when every folder uses the default filename.
+ */
+export const GridWithThumbnailFolders: StoryObj<typeof PanelGrid> = {
+  render: (args) => <PanelGrid {...args} />,
+  args: {
+    heading: 'Projects (folder thumbnails)',
+    basePath: '/programming/uni',
+    thumbnailPath: '/programming/uni',
+    thumbnailDefaultsId: true,
+    defaultThumbnail: 'thumbnail.png',
+    panels: SAMPLE,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Resolves thumbnails as `/programming/uni/<id>/thumbnail.png` — ' +
+          'matching the legacy `${thumbnails_path}${id}/${thumbnail}` scheme ' +
+          'without changing the panel data shape.',
+      },
+    },
+  },
+};
+

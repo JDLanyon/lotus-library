@@ -11,6 +11,8 @@
         v-bind="panel"
         :base-path="basePath || panel.thumbnailPath"
         :thumbnail-path="thumbnailPath || panel.thumbnailPath"
+        :thumbnail-defaults-id="panel.thumbnailDefaultsId ?? thumbnailDefaultsId"
+        :default-thumbnail="panel.defaultThumbnail ?? defaultThumbnail"
         :link-component="linkComponent"
       />
     </div>
@@ -29,6 +31,8 @@ interface PanelShape {
   thumbnailPath?: string
   href?: string
   tags?: string[]
+  thumbnailDefaultsId?: boolean
+  defaultThumbnail?: string
 }
 const props = defineProps({
   id: { type: String, default: undefined },
@@ -37,8 +41,11 @@ const props = defineProps({
   data: { type: Array as () => PanelShape[], default: undefined },
   basePath: { type: String, default: undefined },
   thumbnailPath: { type: String, default: undefined },
+  thumbnailDefaultsId: { type: Boolean, default: undefined },
+  defaultThumbnail: { type: String, default: undefined },
   linkComponent: { type: String, default: 'a' },
 })
 const items = computed(() => props.panels ?? props.data ?? [])
 </script>
+
 

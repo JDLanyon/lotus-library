@@ -8,19 +8,29 @@ export interface PanelProps extends PanelData {
   /** Override the anchor component (e.g. Next's <Link>). */
   linkComponent?: React.ElementType;
   className?: string;
+  thumbnailDefaultsId?: boolean;
+  defaultThumbnail?: string;
 }
 
 function resolveThumbnail(
   thumbnail: string | undefined,
   thumbnailPath: string | undefined,
+  panelId: string,
+  thumbnailDefaultsId: boolean,
+  defaultThumbnail: string,
 ): string | undefined {
-  if (!thumbnail) return undefined;
   // Absolute URLs and root-relative paths pass through untouched.
-  if (/^(https?:)?\/\//.test(thumbnail) || thumbnail.startsWith('/')) {
+  if (thumbnail && (/^(https?:)?\/\//.test(thumbnail) || thumbnail.startsWith('/'))) {
     return thumbnail;
   }
   if (!thumbnailPath) return thumbnail;
-  return `${thumbnailPath.replace(/\/$/, '')}/${thumbnail}`;
+  const base = thumbnailPath.replace(/\/$/, '');
+  if (thumbnailDefaultsId) {
+    // One thumbnail per panel folder: base/<id>/<file or default>.
+    return `${base}/${panelId}/${thumbnail ?? defaultThumbnail}`;
+  }
+  if (!thumbnail) return undefined;
+  return `${base}/${thumbnail}`;
 }
 
 /**
@@ -38,10 +48,18 @@ export function Panel({
   basePath,
   linkComponent: LinkComponent = 'a',
   className = '',
+  thumbnailDefaultsId = false,
+  defaultThumbnail = 'thumbnail.png',
 }: PanelProps) {
   const label = title ?? id;
   const target = href ?? (basePath ? `${basePath.replace(/\/$/, '')}/${id}` : undefined);
-  const src = resolveThumbnail(thumbnail, thumbnailPath);
+  const src = resolveThumbnail(
+    thumbnail,
+    thumbnailPath,
+    id,
+    thumbnailDefaultsId,
+    defaultThumbnail,
+  );
 
   return (
     <LinkComponent
@@ -60,3 +78,4 @@ export function Panel({
 }
 
 export default Panel;
+

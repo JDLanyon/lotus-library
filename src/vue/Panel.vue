@@ -36,6 +36,8 @@ const props = defineProps({
   tags: { type: Array as () => string[], default: undefined },
   basePath: { type: String, default: '' },
   linkComponent: { type: String, default: 'a' },
+  thumbnailDefaultsId: { type: Boolean, default: false },
+  defaultThumbnail: { type: String, default: 'thumbnail.png' },
 })
 const label = computed(() => props.title ?? props.id)
 
@@ -47,10 +49,15 @@ const target = computed(() => {
 
 const resolvedThumbnail = computed(() => {
   const t = props.thumbnail
-  if (!t) return undefined
-  if (/^(https?:)?\/\//.test(t) || t.startsWith('/')) return t
+  if (t && (/^(https?:)?\/\//.test(t) || t.startsWith('/'))) return t
   if (!props.thumbnailPath) return t
-  return `${props.thumbnailPath.replace(/\/$/, '')}/${t}`
+  const base = props.thumbnailPath.replace(/\/$/, '')
+  if (props.thumbnailDefaultsId) {
+    return `${base}/${props.id}/${t ?? props.defaultThumbnail}`
+  }
+  if (!t) return undefined
+  return `${base}/${t}`
 })
 </script>
+
 

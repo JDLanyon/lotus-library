@@ -1,10 +1,3 @@
-/**
- * lotus-library — shared types
- *
- * Framework-agnostic types used by both the React and Vue bindings so the two
- * implementations stay in lock-step.
- */
-
 /** A single piece of work rendered as a Panel (image + copy + tags). */
 export interface PanelData {
   /** Stable identifier, also used to build the detail link. */
@@ -21,6 +14,17 @@ export interface PanelData {
   href?: string;
   /** Tech / category tags rendered as pills. */
   tags?: string[];
+  /**
+   * When true, the resolved thumbnail path includes the panel `id` as a path
+   * segment: `${thumbnailPath}/${id}/${thumbnail ?? defaultThumbnail}`.
+   * Use this to match layouts that store one thumbnail per panel folder.
+   */
+  thumbnailDefaultsId?: boolean;
+  /**
+   * Filename used for `thumbnail` when none is supplied (only meaningful when
+   * `thumbnailDefaultsId` is on). Defaults to `"thumbnail.png"`.
+   */
+  defaultThumbnail?: string;
 }
 
 /** Grid container that lays out a collection of panels. */
@@ -33,9 +37,14 @@ export interface PanelGroup {
   basePath?: string;
   /** Shared thumbnail base path for all panels in this group. */
   thumbnailPath?: string;
+  /** Default for each panel's `thumbnailDefaultsId` (see PanelData). */
+  thumbnailDefaultsId?: boolean;
+  /** Default for each panel's `defaultThumbnail` (see PanelData). */
+  defaultThumbnail?: string;
   /** The panels to render. */
   panels: PanelData[];
 }
 
 /** Direction glyph appended to a Button label. */
 export type ButtonArrow = 'left' | 'right' | 'up' | 'down';
+
