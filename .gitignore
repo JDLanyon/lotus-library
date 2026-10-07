@@ -56,3 +56,6 @@ debug-storybook.log
 
 # storybook static build
 /storybook-static
+
+# npm pack output
+*.tgz
