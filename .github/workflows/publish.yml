@@ -1,0 +1,40 @@
+name: Publish to npm
+
+# Publishes the library to the PUBLIC npm registry (npmjs.org).
+#
+# Triggers:
+#   - manually from the Actions tab (workflow_dispatch), or
+#   - by pushing a version tag, e.g. `git tag v0.1.3 && git push origin v0.1.3`.
+#
+# Requires a repo secret NPM_TOKEN: an npm "Automation" (or granular) access
+# token for the account that owns the @jdlanyon scope, with publish rights.
+# NOTE: npm restricts tokens that bypass 2FA for publishing; use an
+# Automation token created on an account that has 2FA enabled.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # enable npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - run: npm ci
+      - run: npm run build:lib
+
+      # --provenance links the published package to this commit/build.
+      - run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
