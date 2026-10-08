@@ -50,6 +50,10 @@ import '@jdlanyon/lotus-library/style.css';
 
 ## React (Next.js)
 
+The React entry ships a `"use client"` banner, so **server components can import
+it directly** — the components are client components and Next will build the
+client boundary for you. (Do not hand-roll a `'use client'` re-export shim.)
+
 ```tsx
 import { PanelGrid, Button, Modal, ProjectModal } from '@jdlanyon/lotus-library/react';
 import '@jdlanyon/lotus-library/style.css';
@@ -163,20 +167,33 @@ import { PanelGrid, Button, Modal, ProjectModal } from '@jdlanyon/lotus-library/
 `ProjectModal` adds: `slug`, `repo`, `projectBasePath` (default `/projects`),
 `showRepoAction`, `repoLabel`, `loadingText`, `errorText`, `contentSelector`.
 
+> **Header actions must go through the props/slots.** `headerActionsLeft` /
+> `headerActionsRight` render inside `.lotus-modal-header`. Ad-hoc
+> `position: absolute` action buttons placed inside the default body (`children`)
+> are unsupported and will fight the header layout. Route them through the
+> action props (React) / `header-actions-*` slots (Vue) instead.
+
 ### Panel thumbnails
 
-`Panel` resolves `thumbnail` like this:
+Resolution order (first match wins):
 
-- absolute URLs (`https://...`) and root-relative paths (`/img/...`) pass
-  through untouched;
-- otherwise the path is `${thumbnailPath}/${thumbnail}`;
-- with **`thumbnailDefaultsId`** enabled, the panel `id` becomes a path segment:
-  `${thumbnailPath}/${id}/${thumbnail ?? defaultThumbnail}` (default filename
-  `"thumbnail.png"`). This reproduces the common "one thumbnail per panel folder"
-  layout without changing your data shape.
+1. **Absolute URL** (`https://…`, `//cdn…`) or **root-relative** (`/img/…`):
+   used verbatim.
+2. Otherwise, if **`thumbnailDefaultsId`** is enabled, the panel `id` is
+   inserted as a path segment and the per-panel `thumbnail` is the **filename
+   inside that folder**:
+   ```
+   ${thumbnailPath}/${id}/${thumbnail ?? defaultThumbnail}
+   ```
+   (default filename `"thumbnail.png"`). So a panel with
+   `thumbnail: "Idle Drones.png"` → `/programming/uni/IGB383/Idle Drones.png`,
+   and a panel with no `thumbnail` → `/programming/uni/IGB400/thumbnail.png`.
+   **`thumbnail` does not "win" over the `${id}/` folder** — it only supplies the
+   filename within it.
+3. Otherwise (no `thumbnailDefaultsId`): `${thumbnailPath}/${thumbnail}`.
 
-`thumbnailDefaultsId` and `defaultThumbnail` can be set on `PanelGrid` (applies
-to all panels) and overridden per panel:
+`thumbnailDefaultsId` / `defaultThumbnail` can be set on `PanelGrid` (applies to
+all panels) and overridden per panel:
 
 ```tsx
 <PanelGrid

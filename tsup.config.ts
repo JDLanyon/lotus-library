@@ -4,6 +4,17 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node
 import { resolve, dirname } from 'node:path';
 
 /**
+ * Ensure an emitted bundle starts with a `"use client"` directive.
+ * esbuild strips per-file directives while bundling, so we re-add it here.
+ */
+function withUseClient(file: string): void {
+  if (!existsSync(file)) return;
+  const src = readFileSync(file, 'utf-8');
+  if (/^\s*['"]use client['"]/.test(src)) return;
+  writeFileSync(file, `'use client';\n${src}`);
+}
+
+/**
  * Build the React and Vue entry points, then concatenate the core + component
  * CSS into a single dist/lotus.css for one-line theming.
  */
@@ -20,6 +31,15 @@ export default defineConfig([
     external: ['react', 'react-dom'],
   esbuildOptions(options) {
     options.loader = { ...options.loader, '.css': 'empty' };
+  },
+  // The React entry contains client-only components ('use client' in source).
+  // tsup/esbuild drops per-file directives when bundling, so re-emit the banner
+  // on the emitted bundles — otherwise a Next server component that imports the
+  // library evaluates it in the RSC runtime and crashes (React.useRef undefined).
+  async onSuccess() {
+    withUseClient(resolve('dist/react/index.js'));
+    withUseClient(resolve('dist/react/index.cjs'));
+    console.log('\u2713 added "use client" banner to dist/react');
   },
   },
   {
