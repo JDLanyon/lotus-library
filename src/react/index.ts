@@ -1,14 +1,3 @@
-/**
- * lotus-library — React entry point
- *
- *   import { Panel, PanelGrid, Button, GlitchLink } from 'lotus-library/react';
- *   import 'lotus-library/style.css';
- */
-
-import '../core/theme.css';
-import '../core/components.css';
-import './glitch/glitch.css';
-
 export { Panel, type PanelProps } from './Panel';
 export { PanelGrid, type PanelGridProps } from './PanelGrid';
 export { Tags, type TagsProps } from './Tags';
@@ -19,8 +8,47 @@ export { GlitchImage, type GlitchImageProps } from './GlitchImage';
 export { Modal, type ModalProps } from './Modal';
 export { ProjectModal, type ProjectModalProps } from './ProjectModal';
 
+// Ported from the monorepo — framework-agnostic styling lives in core.
+export { Card, type CardComponentProps } from './Card';
+export { Tooltip } from './Tooltip';
+export { TypeWriter } from './TypeWriter';
+export { LotusIcon, type LotusIconProps } from './LotusIcon';
+export { Embed, type EmbedProps } from './Embed';
+export { Nav, type NavProps, type NavLinkItem } from './Nav';
+export { Footer, type FooterProps } from './Footer';
+export {
+  ProjectRenderer,
+  type ProjectRendererProps,
+} from './ProjectRenderer';
+
+// Adapter + theme (context-based routing; override per-component with
+// `linkComponent`). The Next.js provider lives at `…/react/next`.
+export {
+  LotusAdapterProvider,
+  useAdapter,
+  usePathname,
+  useRouter,
+} from './adapter';
+export {
+  LotusThemeProvider,
+  useTheme,
+  useMounted,
+  type Theme,
+  type ThemeController,
+} from './theme';
+
 export { Glitch, type GlitchProps, type GlitchHandle } from './glitch/Glitch';
 export * from './glitch';
 
-export type { PanelData, PanelGroup, ButtonArrow } from '../core/types';
-
+export type {
+  PanelData,
+  PanelGroup,
+  ButtonArrow,
+  CardProps,
+  TooltipProps,
+  TypeWriterProps,
+  LinkProps,
+  ImageProps,
+  LotusAdapter,
+  LotusRouter,
+} from '../core/types';

@@ -1,10 +1,3 @@
-/**
- * lotus-library — Vue 3 entry point
- *
- *   import { Panel, PanelGrid, Button, GlitchLink } from 'lotus-library/vue';
- *   import 'lotus-library/style.css';
- */
-
 import Panel from './Panel.vue';
 import PanelGrid from './PanelGrid.vue';
 import Tags from './Tags.vue';
@@ -13,7 +6,60 @@ import GlitchLink from './GlitchLink.vue';
 import Modal from './Modal.vue';
 import ProjectModal from './ProjectModal.vue';
 
-export { Panel, PanelGrid, Tags, Button, GlitchLink, Modal, ProjectModal };
+// Ported from the monorepo — framework-agnostic styling lives in core.
+import Card from './Card.vue';
+import Tooltip from './Tooltip.vue';
+import TypeWriter from './TypeWriter.vue';
+import LotusIcon from './LotusIcon.vue';
+import Embed from './Embed.vue';
+import Nav from './Nav.vue';
+import Footer from './Footer.vue';
+import ProjectRenderer from './ProjectRenderer.vue';
+import Glitch from './glitch/Glitch.vue';
+
+export {
+  Panel,
+  PanelGrid,
+  Tags,
+  Button,
+  GlitchLink,
+  Modal,
+  ProjectModal,
+  Card,
+  Tooltip,
+  TypeWriter,
+  LotusIcon,
+  Embed,
+  Nav,
+  Footer,
+  ProjectRenderer,
+  Glitch,
+};
+
+// Adapter + theme (context/injection-based routing). The Vue adapter also
+// ships as a plugin via `createLotusAdapter`.
+export {
+  provideLotusAdapter,
+  createLotusAdapter,
+  useAdapter,
+  defaultAdapter,
+  DOM_ROUTER,
+  LOTUS_ADAPTER_KEY,
+  type VueLotusAdapter,
+} from './adapter';
+export {
+  provideLotusTheme,
+  useTheme,
+  useMounted,
+  LOTUS_THEME_KEY,
+  type Theme,
+  type ThemeController,
+} from './theme';
+
+export { useGlitchState, useNameCycler } from './glitch';
+export type { UseGlitchStateOptions } from './glitch';
+
+export type { NavLinkItem } from './Nav.vue';
 
 /** Shape of a single panel entry. */
 export interface PanelData {
@@ -48,6 +94,15 @@ export const LotusLibrary = {
     app.component('LotusGlitchLink', GlitchLink);
     app.component('LotusModal', Modal);
     app.component('LotusProjectModal', ProjectModal);
+    app.component('LotusCard', Card);
+    app.component('LotusTooltip', Tooltip);
+    app.component('LotusTypeWriter', TypeWriter);
+    app.component('LotusIcon', LotusIcon);
+    app.component('LotusEmbed', Embed);
+    app.component('LotusNav', Nav);
+    app.component('LotusFooter', Footer);
+    app.component('LotusProjectRenderer', ProjectRenderer);
+    app.component('LotusGlitch', Glitch);
     app.component('Panel', Panel);
     app.component('PanelGrid', PanelGrid);
     app.component('Tags', Tags);
@@ -55,6 +110,14 @@ export const LotusLibrary = {
     app.component('GlitchLink', GlitchLink);
     app.component('Modal', Modal);
     app.component('ProjectModal', ProjectModal);
+    app.component('Card', Card);
+    app.component('Tooltip', Tooltip);
+    app.component('TypeWriter', TypeWriter);
+    app.component('LotusIcon', LotusIcon);
+    app.component('Embed', Embed);
+    app.component('Nav', Nav);
+    app.component('Footer', Footer);
+    app.component('ProjectRenderer', ProjectRenderer);
+    app.component('Glitch', Glitch);
   },
 };
-

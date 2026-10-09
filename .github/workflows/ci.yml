@@ -1,0 +1,59 @@
+name: CI
+
+# Pull requests and branch pushes run the checks only.
+# Pushes to `main` run the same checks, then release.
+#
+# Releases publish to GitHub Packages (npm.pkg.github.com) using the built-in
+# GITHUB_TOKEN — no long-lived tokens or manual 2FA are involved.
+# semantic-release derives the version from conventional commits and only
+# publishes when a release is warranted (feat/fix/BREAKING CHANGE).
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+      - run: npm ci
+      - name: Typecheck (React + Vue)
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Build library
+        run: npm run build:lib
+
+  release:
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the release commit/tag + GitHub release
+      issues: write
+      pull-requests: write
+      packages: write # publish to GitHub Packages
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # semantic-release needs full history
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+      - run: npm ci
+      - run: npm run build:lib
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release

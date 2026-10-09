@@ -40,7 +40,8 @@
     "node_modules",
     "dist",
     "tsup.config.ts",
-    "storybook-static"
+    "storybook-static",
+    "src/vue"
   ]
 }
 

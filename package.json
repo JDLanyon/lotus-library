@@ -1,8 +1,9 @@
 {
   "name": "@jdlanyon/lotus-library",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/",
+    "access": "restricted"
   },
   "description": "Reusable Panel, Button and Glitch components for reproducible custom websites (React + Vue 3).",
   "license": "MIT",
@@ -38,6 +39,16 @@
         "default": "./dist/react/index.cjs"
       }
     },
+    "./react/next": {
+      "import": {
+        "types": "./dist/react/next.d.ts",
+        "default": "./dist/react/next.js"
+      },
+      "require": {
+        "types": "./dist/react/next.d.cts",
+        "default": "./dist/react/next.cjs"
+      }
+    },
     "./vue": {
       "types": "./dist/vue/index.d.ts",
       "import": "./dist/vue/index.js",
@@ -47,20 +58,27 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
+    "build-storybook": "storybook build",
     "build:lib": "tsup && npm run build:types:vue",
     "build:types:vue": "vue-tsc -p tsconfig.vue.json",
-    "start": "next start",
+    "dev": "next dev",
     "lint": "eslint",
+    "release": "semantic-release",
+    "start": "next start",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "prepublishOnly": "npm run build:lib"
+    "test": "vitest run --typecheck",
+    "typecheck": "tsc -p tsconfig.json --noEmit && vue-tsc -p tsconfig.vue.json --noEmit"
   },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",
-    "vue": ">=3.3"
+    "vue": ">=3.3",
+    "next": ">=14",
+    "lucide-react": ">=0.400",
+    "@icons-pack/react-simple-icons": ">=10",
+    "lucide-vue-next": ">=0.400",
+    "vue-simple-icons": ">=6"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -71,6 +89,21 @@
     },
     "vue": {
       "optional": true
+    },
+    "next": {
+      "optional": true
+    },
+    "lucide-react": {
+      "optional": true
+    },
+    "@icons-pack/react-simple-icons": {
+      "optional": true
+    },
+    "lucide-vue-next": {
+      "optional": true
+    },
+    "vue-simple-icons": {
+      "optional": true
     }
   },
   "dependencies": {
@@ -80,6 +113,13 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.4.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.6",
+    "@semantic-release/npm": "^12.0.2",
+    "@semantic-release/release-notes-generator": "^14.1.1",
     "@storybook/addon-a11y": "^10.6.1",
     "@storybook/addon-docs": "^10.6.1",
     "@storybook/addon-onboarding": "^10.6.1",
@@ -95,10 +135,12 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "eslint-plugin-storybook": "^10.6.1",
+    "semantic-release": "^24.2.9",
     "storybook": "^10.6.1",
     "tailwindcss": "^4",
     "tsup": "^8.5.1",
     "typescript": "^5",
+    "vitest": "^3.2.7",
     "vue": "^3.5.38",
     "vue-tsc": "^3.3.12"
   },

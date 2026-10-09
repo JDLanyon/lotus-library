@@ -381,3 +381,384 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+/* ------------------------------------------------------------------ *
+ * Card — dated, tagged entry
+ * ------------------------------------------------------------------ */
+.lotus-card {
+  position: relative;
+  padding: 1.25rem;
+  border: 1px solid var(--lotus-border-color);
+  border-radius: var(--lotus-radius);
+  color: var(--lotus-primary);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.lotus-card:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--lotus-border-color) 40%, transparent);
+}
+
+.lotus-card:focus-visible {
+  outline: 2px solid var(--lotus-primary);
+  outline-offset: 2px;
+}
+
+.lotus-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.lotus-card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.lotus-card-date {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: var(--lotus-secondary);
+}
+
+.lotus-card-desc {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--lotus-secondary);
+}
+
+.lotus-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.lotus-card-tag {
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  background: color-mix(in srgb, var(--lotus-border-color) 40%, transparent);
+  border: 1px solid var(--lotus-border-color);
+  border-radius: var(--lotus-radius);
+  color: var(--lotus-secondary);
+}
+
+.lotus-card-body {
+  margin-top: 0.75rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * Tooltip
+ * ------------------------------------------------------------------ */
+.lotus-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.lotus-tooltip-text {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  z-index: 10;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: var(--lotus-secondary);
+  background: var(--lotus-background);
+  border: 1px solid var(--lotus-border-color);
+  border-radius: var(--lotus-radius);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.5rem);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.lotus-tooltip:hover .lotus-tooltip-text,
+.lotus-tooltip:focus-within .lotus-tooltip-text {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ------------------------------------------------------------------ *
+ * TypeWriter
+ * ------------------------------------------------------------------ */
+.lotus-typewriter {
+  display: inline-flex;
+  align-items: center;
+}
+
+.lotus-typewriter-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  margin-left: 1px;
+  background: var(--lotus-secondary);
+  transition: opacity 0.3s ease;
+}
+
+.lotus-typewriter-caret.is-idle {
+  animation: lotus-blink 1s step-end infinite;
+}
+
+.lotus-typewriter-rest {
+  opacity: 0.4;
+}
+
+@keyframes lotus-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * LotusIcon
+ * ------------------------------------------------------------------ */
+.lotus-icon {
+  display: inline-flex;
+  color: inherit;
+}
+
+.lotus-icon img {
+  width: 100%;
+  height: 100%;
+}
+
+/* ------------------------------------------------------------------ *
+ * Embed (responsive 16:9 YouTube)
+ * ------------------------------------------------------------------ */
+.lotus-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.lotus-embed-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------ *
+ * Nav — centred logo, links split left/right, slide-in mobile drawer
+ * ------------------------------------------------------------------ */
+.lotus-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: center;
+  gap: 2rem;
+  width: 100vw;
+  padding: 0.5rem 0;
+  text-align: center;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--lotus-background) 80%, transparent),
+    transparent
+  );
+}
+
+.lotus-nav-group {
+  display: none;
+  justify-content: center;
+  gap: 4rem;
+}
+
+.lotus-nav-group-left {
+  grid-column: 2 / span 2;
+}
+
+.lotus-nav-group-right {
+  grid-column: 5 / span 2;
+}
+
+.lotus-nav-logo {
+  grid-column: 4;
+  display: inline-flex;
+  justify-self: center;
+}
+
+.lotus-nav-logo-img {
+  width: 64px;
+  height: 64px;
+}
+
+.lotus-nav-link {
+  display: flex;
+  align-items: center;
+  color: var(--lotus-secondary);
+  text-decoration: none;
+}
+
+.lotus-nav-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.lotus-nav-link.is-active {
+  font-weight: 700;
+  color: var(--lotus-primary);
+}
+
+.lotus-nav-mobile-toggle {
+  grid-column: 7;
+  justify-self: center;
+}
+
+.lotus-nav-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  color: var(--lotus-secondary);
+  cursor: pointer;
+}
+
+.lotus-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: color-mix(in srgb, var(--lotus-background) 92%, transparent);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.lotus-nav-drawer.is-open {
+  transform: translateX(0);
+}
+
+.lotus-nav-drawer-head {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.lotus-nav-drawer-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+@media (min-width: 48rem) {
+  .lotus-nav-group {
+    display: flex;
+  }
+
+  .lotus-nav-mobile-toggle {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Footer — social links + theme switch
+ * ------------------------------------------------------------------ */
+.lotus-footer {
+  position: relative;
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+}
+
+.lotus-footer.is-landing {
+  position: absolute;
+  bottom: 2rem;
+  left: 0;
+  right: 0;
+}
+
+.lotus-footer-link {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  color: var(--lotus-secondary);
+  text-decoration: none;
+}
+
+.lotus-footer-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ------------------------------------------------------------------ *
+ * ProjectRenderer — typed section layout
+ * ------------------------------------------------------------------ */
+.lotus-project-heading {
+  margin: 0 0 2rem;
+  text-align: center;
+}
+
+.lotus-project-warnings {
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.lotus-project-github {
+  display: flex;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.lotus-project-media {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.lotus-project-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.lotus-project-row > * {
+  padding: 0.5rem;
+}
+
+.lotus-project-image {
+  height: auto;
+}
+
+.lotus-project-image.is-full,
+.lotus-project-cell.is-full {
+  width: 100%;
+}
+
+.lotus-project-image.is-half,
+.lotus-project-cell.is-half {
+  width: 50%;
+}
+
+.lotus-project-li {
+  margin-left: 1rem;
+}
+
+.lotus-project-link {
+  font-weight: 700;
+  text-decoration: underline;
+}

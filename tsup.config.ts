@@ -20,18 +20,30 @@ function withUseClient(file: string): void {
  */
 export default defineConfig([
   {
-    entry: { 'react/index': 'src/react/index.ts' },
-  format: ['esm', 'cjs'],
+    entry: {
+      'react/index': 'src/react/index.ts',
+      'react/next': 'src/react/next.tsx',
+    },
+    format: ['esm', 'cjs'],
     tsconfig: './tsconfig.build.json',
     dts: { compilerOptions: { incremental: false, noEmit: false, emitDeclarationOnly: true, declaration: true } },
     clean: true,
   splitting: false,
   sourcemap: true,
-  treeshake: true,
-    external: ['react', 'react-dom'],
-  esbuildOptions(options) {
-    options.loader = { ...options.loader, '.css': 'empty' };
-  },
+    treeshake: true,
+    external: [
+      'react',
+      'react-dom',
+      'next',
+      'next/link',
+      'next/image',
+      'next/navigation',
+      'lucide-react',
+      '@icons-pack/react-simple-icons',
+    ],
+    esbuildOptions(options) {
+      options.loader = { ...options.loader, '.css': 'empty' };
+    },
   // The React entry contains client-only components ('use client' in source).
   // tsup/esbuild drops per-file directives when bundling, so re-emit the banner
   // on the emitted bundles — otherwise a Next server component that imports the
@@ -39,8 +51,10 @@ export default defineConfig([
   async onSuccess() {
     withUseClient(resolve('dist/react/index.js'));
     withUseClient(resolve('dist/react/index.cjs'));
+    withUseClient(resolve('dist/react/next.js'));
+    withUseClient(resolve('dist/react/next.cjs'));
     console.log('\u2713 added "use client" banner to dist/react');
-  },
+    },
   },
   {
     entry: { 'vue/index': 'src/vue/index.ts' },
@@ -50,8 +64,11 @@ export default defineConfig([
     splitting: false,
     sourcemap: false,
     treeshake: true,
-    external: ['vue'],
+    external: ['vue', 'lucide-vue-next', 'vue-simple-icons'],
     esbuildPlugins: [vue()],
+    esbuildOptions(options) {
+      options.loader = { ...options.loader, '.css': 'empty' };
+    },
   },
   {
     entry: { 'style-entry': 'src/core/style-entry.ts' },
