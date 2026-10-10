@@ -96,11 +96,16 @@ export const Glitch = function Glitch({
     if (phase === 'idle') onGlitchComplete?.();
   }, [phase, onGlitchComplete]);
 
-  const flickerRef = React.useRef(false);
+  // `shouldFlicker` is read during render, so it must be state (not a ref).
+  const [shouldFlicker, setShouldFlicker] = React.useState(false);
   React.useEffect(() => {
-    if (phase === 'active') {
-      flickerRef.current = Math.random() <= 0.1;
-    }
+    if (phase !== 'active') return;
+    // Deferred out of the effect body to avoid a synchronous setState cascade.
+    const id = setTimeout(() => {
+      // eslint-disable-next-line react-hooks/purity
+      setShouldFlicker(Math.random() <= 0.1);
+    }, 0);
+    return () => clearTimeout(id);
   }, [phase]);
 
   React.useEffect(() => {
@@ -165,7 +170,7 @@ export const Glitch = function Glitch({
           <MotionBlurEffect intensity={intensity * 2} />
           <NoiseEffect intensity={intensity} duration={glitchDuration} />
           <ScanlineEffect intensity={intensity} duration={glitchDuration} />
-          <FlickerEffect phase={phase} shouldFlicker={flickerRef.current} />
+          <FlickerEffect phase={phase} shouldFlicker={shouldFlicker} />
         </span>
       </PositionDisplacementEffect>
     </span>

@@ -27,3 +27,32 @@ export function formatDate(date: string | Date): string {
 export function deleteLastWord(text: string): string {
   return text.replace(/\s*\S+$/, '');
 }
+
+/**
+ * Resolve a component thumbnail/media URL. Shared by Panel and Card in both
+ * frameworks so the rules are defined exactly once.
+ *
+ * - Absolute (`http(s)://`, `//`) and root-relative (`/`) paths pass through.
+ * - Otherwise the filename is joined onto `thumbnailPath`.
+ * - When `defaultsToId` is set, the owner's `id`/`slug` is inserted as a path
+ *   segment: `<thumbnailPath>/<id>/<thumbnail | defaultThumbnail>`.
+ */
+export function resolveThumbnail(
+  thumbnail: string | undefined,
+  thumbnailPath: string | undefined,
+  id: string,
+  defaultsToId = false,
+  defaultThumbnail = 'thumbnail.png',
+): string | undefined {
+  if (thumbnail && (/^(https?:)?\/\//.test(thumbnail) || thumbnail.startsWith('/'))) {
+    return thumbnail;
+  }
+  if (!thumbnailPath) return thumbnail;
+  const base = thumbnailPath.replace(/\/$/, '');
+  if (defaultsToId) {
+    return `${base}/${id}/${thumbnail ?? defaultThumbnail}`;
+  }
+  if (!thumbnail) return undefined;
+  return `${base}/${thumbnail}`;
+}
+

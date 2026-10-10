@@ -1,12 +1,16 @@
 # @jdlanyon/lotus-library
 
-Reusable **Panel**, **Button**, **Tags**, **Glitch** and **Modal** components for
-reproducible custom websites. Ships **React** and **Vue 3** bindings from a single
-package with matching props, class names and behaviour.
+Reusable **Card**, **Panel**, **Button**, **Tags**, **Glitch** and **Modal**
+components for reproducible custom websites. Ships **React** and **Vue 3**
+bindings from a single package with matching props, class names and behaviour.
 
-- **React** — first release (used by `sausytime.com`, Next.js)
-- **Vue 3** — used by `jdlanyon.dev` (VitePress), `arana united futsal` and other Vite sites
+- **React** — used by `sausytime.com` (Next.js)
+- **Vue 3** — used by `jdlanyon.dev` (VitePress) and other Vite sites
 - Zero runtime dependencies beyond a React/Vue peer.
+
+> **New here, or an LLM?** Read [Component model](#component-model-when-to-use-what)
+> and [Layout is the host's job](#layout-is-the-hosts-job) first — they define
+> the library's boundaries and are the most common source of misuse.
 
 ## Install
 
@@ -37,16 +41,90 @@ import '@jdlanyon/lotus-library/style.css';
 
 | Component      | React | Vue | Purpose                                                   |
 | -------------- | :---: | :-: | --------------------------------------------------------- |
+| `Card`         |  ✅   | ✅  | Dated/tagged content card (thumbnail, title, tags, link)  |
+| `CardGrid`     |  ✅   | ✅  | Convenience: maps items → `Card`s, owns one `ProjectModal`|
 | `Panel`        |  ✅   | ✅  | A single linked card with thumbnail, title, description   |
 | `PanelGrid`    |  ✅   | ✅  | Responsive flex-wrap grid that lays out `Panel`s          |
 | `Tags`         |  ✅   | ✅  | Row of small tag chips                                    |
 | `Button`       |  ✅   | ✅  | Blocky hover-invert button / link                         |
 | `GlitchLink`   |  ✅   | ✅  | Link with a chromatic-aberration glitch on hover          |
-| `GlitchText`   |  ✅   | —   | Animated glitching text                                   |
-| `GlitchImage`  |  ✅   | —   | Animated glitching image                                  |
-| `Glitch`       |  ✅   | —   | Low-level glitch engine (effects, name cycler)            |
+| `GlitchText`   |  ✅   | ✅  | Animated glitching text                                   |
+| `GlitchImage`  |  ✅   | ✅  | Animated glitching image                                  |
+| `Glitch`       |  ✅   | ✅  | Low-level glitch engine (effects, name cycler)            |
 | `Modal`        |  ✅   | ✅  | Pure modal shell (slot/prop driven, no fetching)          |
 | `ProjectModal` |  ✅   | ✅  | `Modal` wrapper that fetches a `/projects/:slug` page     |
+| `Nav` / `Footer` | ✅ | ✅  | Optional site chrome (logo, links, theme switch)          |
+| `Embed`        |  ✅   | ✅  | Responsive 16:9 iframe (e.g. YouTube)                     |
+| `Tooltip`      |  ✅   | ✅  | Hover tooltip wrapping arbitrary content                  |
+| `TypeWriter`   |  ✅   | ✅  | Cycling typewriter heading                                |
+
+## Component model (when to use what)
+
+The library exposes **three** content surfaces. Pick by size and intent — they
+are layers of the same idea (a clickable surface), not alternatives:
+
+| Surface  | Size / intent                              | Use for                              |
+| -------- | ------------------------------------------ | ------------------------------------ |
+| `Button` | **Small**, few words                        | Actions, links, "Open", "View →"     |
+| `Card`   | **Medium**, square-ish; text + image + tags | Blog entries, project grid items     |
+| `Panel`  | **Large**, image-led "fancy div"            | Hero-style linked tiles              |
+
+`Card` and `Panel` are conceptually the same primitive (a large clickable
+surface that opens a modal or navigates) and now **share the same thumbnail-URL
+resolution** (`resolveThumbnail`) and CSS tokens, so they look and behave alike:
+
+- **`Panel`** is image-first: a cover image above title/description/tags, with a
+  `basePath`-derived link. Prefer it for image-led tiles.
+- **`Card`** is content-first: optional media, then title/date/description/tags.
+  Prefer it for dated/tagged entries and grids. It adds `href` linking, `size`
+  presets, `fill`, and an optional media `#media` slot.
+
+> A future release may fold them into one component with a `variant`. Until
+> then, treat `Panel` as the image-led preset and `Card` as the content preset.
+
+## Conventions (contributors & LLMs)
+
+These rules are enforced in review; follow them for every change:
+
+- **React ≡ Vue.** Every component ships in both frameworks with **identical
+  prop names** (camelCase — `tabIndex`, not `tabindex`), **identical class
+  names**, and identical behaviour. A host must be able to move a component
+  between a React app and a Vue app by changing only the import.
+- **One content convention.** Components that render a single labelled control
+  take a slot/children (`Button`, `Card`, `GlitchLink`) and may also accept a
+  `text` prop as a fallback for data-driven callers. Prefer children/slot.
+- **One linking mechanism.** Native `<a>` by default, overridable with
+  `linkComponent` (host router). **Do not** add a third linking pattern.
+- **No layout.** Components own their own box; they never position siblings.
+  Grids/columns/spans belong to the host (see below).
+- **Framework-agnostic core.** Pure helpers live in `src/core/utils.ts` and are
+  unit-tested; anything touching the DOM/framework goes through the adapter.
+- **New props are additive.** Never rename/remove a published prop without a
+  `BREAKING CHANGE` and a version bump.
+
+## Layout is the host's job
+
+**The library does not own your grid.** It ships components and *one* sane
+default grid, nothing more. Specifically:
+
+- `CardGrid` is a **thin convenience**: it maps `items[]` to `<Card>`s and owns
+  **one shared `ProjectModal`** (so you don't re-implement open/close state).
+  It renders a plain container class (`lotus-card-grid`) with a default
+  responsive `auto-fill` grid.
+- To change the layout, pass your **own `className`** and style it with your
+  own CSS. There is **no** mosaic/span/column engine in the library.
+- `Card`'s `aspect` prop controls the **media box** (a component concern). It is
+  **not** a layout prop. There are no `span`/`rowSpan` props.
+
+```css
+/* Host CSS — you own this. */
+.my-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 2rem;
+}
+.my-projects .lotus-card:nth-child(1) { grid-column: span 2; } /* featured */
+```
 
 ## React (Next.js)
 
@@ -205,6 +283,100 @@ all panels) and overridden per panel:
 />
 ```
 
+## Cards & grids
+
+`Card` is the content surface. On its own it is a single card; wrap a list in
+`CardGrid` to get a default responsive grid plus **one shared `ProjectModal`**.
+Remember: the grid layout is yours to override (see
+[Layout is the host's job](#layout-is-the-hosts-job)).
+
+### React
+
+```tsx
+import { Card, CardGrid } from '@jdlanyon/lotus-library/react';
+
+// A single card linking out:
+<Card
+  title="Dead Bread"
+  description="A browser game"
+  tags={['game', 'canvas']}
+  thumbnail="/projects/dead-bread/cover.png"
+  aspect="16/9"
+  href="/projects/dead-bread"
+/>;
+
+// A grid of cards; clicking one opens a shared ProjectModal for its slug:
+<CardGrid
+  items={[
+    { slug: 'dead-bread', title: 'Dead Bread', tags: ['game'], thumbnail: 'cover.png' },
+    { slug: 'task-tank', title: 'Task Tank', repo: 'https://github.com/…' },
+  ]}
+  thumbnailPath="/projects"   // forwarded to each Card
+  modalProps={{ projectBasePath: '/projects' }}
+/>;
+```
+
+### Vue
+
+```vue
+<script setup lang="ts">
+import { Card, CardGrid } from '@jdlanyon/lotus-library/vue';
+</script>
+
+<template>
+  <Card
+    title="Dead Bread"
+    description="A browser game"
+    :tags="['game', 'canvas']"
+    thumbnail="/projects/dead-bread/cover.png"
+    aspect="16/9"
+    href="/projects/dead-bread"
+  >
+    <!-- optional media override (wins over `thumbnail`): -->
+    <template #media><img src="/hero.png" alt="" /></template>
+  </Card>
+
+  <CardGrid
+    :items="projects"
+    thumbnail-path="/projects"
+    :modal-props="{ projectBasePath: '/projects' }"
+  />
+</template>
+```
+
+### Media URL resolution (Card and Panel share this)
+
+Same rules as [Panel thumbnails](#panel-thumbnails). For a `Card`, the owner id
+used by `thumbnailDefaultsId` is `slug ?? title`. In `CardGrid`, `slug` is passed
+through automatically. React also accepts a `renderMedia` render-prop; Vue
+accepts a `#media` slot (both win over `thumbnail`).
+
+## Adapters (routing + images)
+
+Components never hard-depend on a router or image component. They render a
+native `<a>` / `<img>` by default, or whatever the host's **adapter** supplies.
+
+- **Next.js**: wrap your app in `<LotusNextProvider>` (from
+  `@jdlanyon/lotus-library/react/next`) and components route via `next/link` /
+  `next/image`.
+- **Vue/VitePress**: `provideLotusAdapter` (or `createLotusAdapter`) to map
+  `Link`/`Image`/`usePathname`/`useRouter` to your router.
+
+### Next.js + next-themes
+
+`<LotusNextProvider themeController={{ theme, setTheme }}>` forwards a host-owned
+theme into the library, so `<Footer>`'s theme switch reflects the real theme.
+**next-themes stays the single source of truth** — the library reads theme state
+and does **not** write `data-theme`; keep `attribute="data-theme"` on your
+`ThemeProvider`.
+
+### Nav logo in dark mode
+
+The bundled `lotus.svg` is near-black, so `.lotus-nav-logo-img` is **inverted
+automatically** under dark themes. If you supply your **own light-coloured**
+logo via `logoSrc`, pass `logoInvert={false}` (React) /
+`:logo-invert="false"` (Vue), or add the `lotus-nav-logo-img--no-invert` class.
+
 ## Theming
 
 Colours are monochromatic by default and driven entirely by CSS custom
@@ -217,7 +389,8 @@ properties. Override them anywhere in your cascade, or set them on `:root`:
   --lotus-background: #eee;
   --lotus-border-color: #ddd;
   --lotus-radius: 0px;
-  --lotus-font-sans: 'Poppins', system-ui, sans-serif;
+  /* Font is opt-in — omit to inherit the host font (see "Fonts" below). */
+  /* --lotus-font-sans: var(--font-your-font); */
 }
 ```
 
@@ -225,16 +398,27 @@ Dark mode activates via `.lotus-dark`, `.dark` or `[data-theme="dark"]`.
 
 ### Fonts
 
-The library **ships no font files**. `--lotus-font-sans` defaults to a
-**Poppins-first** stack — load Poppins yourself (self-host or Google Fonts) or
-override the token to use your own typeface:
+The library **ships no font files and picks no font**. Components **inherit the
+host's font** by default (`font-family: var(--lotus-font-sans, inherit)`).
 
-```html
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-  rel="stylesheet"
-/>
+- **Do nothing** → components use whatever font your site's `body` uses. This is
+  the recommended default.
+- **Opt in to a specific font** → set the token anywhere in your cascade:
+
+```css
+:root {
+  /* e.g. a next/font variable, or any stack */
+  --lotus-font-sans: var(--font-overpass-mono);
+}
+```
+
+To use the library's original **Poppins-first** look, opt into the bundled
+fallback stack explicitly:
+
+```css
+:root {
+  --lotus-font-sans: var(--lotus-font-sans-default);
+}
 ```
 
 ### Buttons

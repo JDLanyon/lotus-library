@@ -29,12 +29,29 @@ export function ChromaticAberrationEffect({
   const layerRandomness = React.useMemo(
     () =>
       CHROMA_COLORS.map(() => ({
+        // Randomised once per intensity change (memoised), not per render.
+        /* eslint-disable react-hooks/purity */
         xJitter: (Math.random() - 0.5) * 4,
         yJitter: (Math.random() - 0.5) * 4,
         glowJitter: Math.random() * 3,
+        /* eslint-enable react-hooks/purity */
       })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [intensity],
+  );
+
+  // Precompute per-layer displacement randomisers so render stays pure
+  // (no Math.random during render — required by react-hooks/purity).
+  const layerDisplacement = React.useMemo(
+    () =>
+      CHROMA_COLORS.map(() => ({
+        /* eslint-disable react-hooks/purity */
+        displaceX: Math.random() * 0.8,
+        displaceY: Math.random() * 0.5,
+        /* eslint-enable react-hooks/purity */
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [intensity, displacement],
   );
 
   if (intensity === 0) return null;
@@ -43,14 +60,15 @@ export function ChromaticAberrationEffect({
     <span style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} aria-hidden="true">
       {CHROMA_COLORS.map((color, i) => {
         const rand = layerRandomness[i];
+        const disp = layerDisplacement[i];
 
         const displaceX =
           !disableDisplacement && displacement > 0
-            ? Math.random() * displacement * 0.8 * (i % 2 ? 1 : -1)
+            ? disp.displaceX * displacement * (i % 2 ? 1 : -1)
             : 0;
         const displaceY =
           !disableDisplacement && displacement > 0
-            ? Math.random() * displacement * 0.5 * (i % 3 ? 1 : -1)
+            ? disp.displaceY * displacement * (i % 3 ? 1 : -1)
             : 0;
 
         const clipX = !disableDisplacement

@@ -33,8 +33,12 @@ export function TypeWriter({
     if (!isDeleting && currentText === currentFullText) {
       timer = setTimeout(() => setIsDeleting(true), delayBetweenHeadings);
     } else if (isDeleting && currentText === '') {
-      setIsDeleting(false);
-      setCurrentHeadingIndex((prev) => (prev + 1) % headings.length);
+      // Defer the state reset out of the effect body (avoids cascading
+      // synchronous renders — react-hooks/set-state-in-effect).
+      timer = setTimeout(() => {
+        setIsDeleting(false);
+        setCurrentHeadingIndex((prev) => (prev + 1) % headings.length);
+      }, wordDeleteDelayMs);
     } else {
       const delay = isDeleting ? wordDeleteDelayMs : charDelayMs;
       timer = setTimeout(() => {

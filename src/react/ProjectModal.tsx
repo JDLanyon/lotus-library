@@ -60,10 +60,13 @@ export function ProjectModal({
     if (!open) return;
 
     let cancelled = false;
-    setLoading(true);
-    setError(false);
 
     (async () => {
+      // Reset inside the async body so we don't call setState synchronously in
+      // the effect (react-hooks/set-state-in-effect).
+      setLoading(true);
+      setError(false);
+
       try {
         // Try the clean URL first (dev server), fall back to .html (static deploy).
         let res = await fetch(pageUrl);

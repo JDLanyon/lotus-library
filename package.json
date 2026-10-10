@@ -1,6 +1,6 @@
 {
   "name": "@jdlanyon/lotus-library",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/",
     "access": "restricted"
@@ -71,13 +71,13 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && vue-tsc -p tsconfig.vue.json --noEmit"
   },
   "peerDependencies": {
+    "@icons-pack/react-simple-icons": ">=10",
+    "lucide-react": ">=0.400 <1",
+    "lucide-vue-next": ">=0.400 <1",
+    "next": ">=14",
     "react": ">=18",
     "react-dom": ">=18",
     "vue": ">=3.3",
-    "next": ">=14",
-    "lucide-react": ">=0.400",
-    "@icons-pack/react-simple-icons": ">=10",
-    "lucide-vue-next": ">=0.400",
     "vue-simple-icons": ">=7"
   },
   "peerDependenciesMeta": {
@@ -106,9 +106,9 @@
       "optional": true
     }
   },
-  "dependencies": {},
   "devDependencies": {
     "@chromatic-com/storybook": "^5.4.0",
+    "@icons-pack/react-simple-icons": "^13.15.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/exec": "^6.0.3",
@@ -129,8 +129,10 @@
     "@vitejs/plugin-vue": "^6.0.9",
     "esbuild-plugin-vue-next": "^0.1.4",
     "eslint": "^9",
-    "eslint-config-next": "16.2.1",
+    "eslint-config-next": "^16.2.1",
     "eslint-plugin-storybook": "^10.6.1",
+    "lucide-react": "^0.475.0",
+    "lucide-vue-next": "^0.475.0",
     "next": "16.2.1",
     "semantic-release": "^24.2.9",
     "storybook": "^10.6.1",
@@ -139,6 +141,7 @@
     "typescript": "^5",
     "vitest": "^3.2.7",
     "vue": "^3.5.38",
+    "vue-simple-icons": "^7.5.0",
     "vue-tsc": "^3.3.12"
   },
   "repository": {
@@ -146,4 +149,3 @@
     "url": "git+https://github.com/JDLanyon/lotus-library.git"
   }
 }
-

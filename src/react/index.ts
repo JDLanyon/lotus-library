@@ -10,6 +10,7 @@ export { ProjectModal, type ProjectModalProps } from './ProjectModal';
 
 // Ported from the monorepo — framework-agnostic styling lives in core.
 export { Card, type CardComponentProps } from './Card';
+export { CardGrid, type CardGridProps } from './CardGrid';
 export { Tooltip } from './Tooltip';
 export { TypeWriter } from './TypeWriter';
 export { LotusIcon, type LotusIconProps } from './LotusIcon';
@@ -45,6 +46,7 @@ export type {
   PanelGroup,
   ButtonArrow,
   CardProps,
+  ProjectCardData,
   TooltipProps,
   TypeWriterProps,
   LinkProps,

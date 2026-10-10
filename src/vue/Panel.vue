@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { resolveThumbnail } from '../core/utils'
 import Tags from './Tags.vue'
 
 const props = defineProps({
@@ -47,17 +48,15 @@ const target = computed(() => {
   return undefined
 })
 
-const resolvedThumbnail = computed(() => {
-  const t = props.thumbnail
-  if (t && (/^(https?:)?\/\//.test(t) || t.startsWith('/'))) return t
-  if (!props.thumbnailPath) return t
-  const base = props.thumbnailPath.replace(/\/$/, '')
-  if (props.thumbnailDefaultsId) {
-    return `${base}/${props.id}/${t ?? props.defaultThumbnail}`
-  }
-  if (!t) return undefined
-  return `${base}/${t}`
-})
+const resolvedThumbnail = computed(() =>
+  resolveThumbnail(
+    props.thumbnail,
+    props.thumbnailPath,
+    props.id,
+    props.thumbnailDefaultsId,
+    props.defaultThumbnail,
+  ),
+)
 </script>
 
 

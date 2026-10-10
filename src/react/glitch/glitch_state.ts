@@ -36,7 +36,10 @@ export function useGlitchState({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const phaseRef = useRef<GlitchPhase>('idle');
 
-  phaseRef.current = phase;
+  // Keep the ref in sync with `phase` without writing during render.
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
 
   const clearTimers = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -89,6 +92,9 @@ export function useGlitchState({
     if (!enabled) return;
     const min = Math.max(100, delay - variance);
     const max = delay + variance;
+    // Runs inside timer callbacks (never during render) — jittering the delay
+    // is intentional. react-hooks/purity can't see across the setTimeout.
+    // eslint-disable-next-line react-hooks/purity
     const nextDelay = Math.random() * (max - min) + min;
     timerRef.current = setTimeout(() => {
       triggerGlitch();

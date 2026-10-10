@@ -111,6 +111,17 @@ export interface LotusAdapter {
 
 /* -------------------------------------------------------------------------- *
  * Component prop shapes shared by the React and Vue bindings.
+ *
+ * Conventions (kept identical across React + Vue, enforced in review):
+ * - Prop names are camelCase and match exactly between frameworks (`tabIndex`,
+ *   not `tabindex`).
+ * - Content convention: components that render a single labelled control take
+ *   a slot/children (`Button`, `Card`, `GlitchLink`) and ALSO accept a `text`
+ *   prop as a fallback when no children are supplied (`GlitchLink`, `Button`
+ *   via `text`). Prefer children/slot; `text` exists for data-driven callers.
+ * - Links/buttons converge on one mechanism: native `<a>` by default, with a
+ *   `linkComponent` override for host routers (Next `Link`, vue-router). Do
+ *   not introduce a third linking pattern.
  * -------------------------------------------------------------------------- */
 
 /** A dated, tagged entry rendered as a Card. */
@@ -133,6 +144,76 @@ export interface CardProps {
   ariaLabel?: string;
   /** Extra class(es) appended to `.lotus-card`. */
   className?: string;
+  /**
+   * Layout preset. `'auto'` (content width, default), `'full'` (stretch to the
+   * container) or `'compact'` (tighter padding). Rendered as
+   * `.lotus-card--<size>`.
+   */
+  size?: 'auto' | 'full' | 'compact';
+  /** Stretch to the height of the grid row (equal-height grid cards). */
+  fill?: boolean;
+  /**
+   * When set, the whole card navigates here. Rendered as an anchor (or the
+   * host `linkComponent`), reusing the same mechanism as GlitchLink/Button.
+   */
+  href?: string;
+  /**
+   * Override the anchor element/component when `href` is set. Strings map to
+   * native tags; pass the host router Link for SPA routing; `object` covers
+   * component objects (React/Vue).
+   */
+  linkComponent?: string | object;
+  /* --- Media (parity with Panel; see resolveThumbnail in core/utils) --- */
+  /** Thumbnail filename (e.g. "thumbnail.png") or absolute URL. */
+  thumbnail?: string;
+  /** Base path prepended to `thumbnail` for locally-stored assets. */
+  thumbnailPath?: string;
+  /**
+   * Identifier used by `thumbnailDefaultsId` to build the media path. Cards
+   * without an explicit id fall back to the title. CardGrid passes the item's
+   * `slug` here automatically.
+   */
+  slug?: string;
+  /**
+   * When true, the resolved path includes the card's `slug` as a segment:
+   * `${thumbnailPath}/${slug}/${thumbnail ?? defaultThumbnail}`.
+   */
+  thumbnailDefaultsId?: boolean;
+  /** Filename used when `thumbnail` is omitted (with `thumbnailDefaultsId`). Default "thumbnail.png". */
+  defaultThumbnail?: string;
+  /** Alt text for the media image. Defaults to `title`. */
+  thumbnailAlt?: string;
+  /** Convert the thumbnail with the host adapter's Image (Next <Image> etc). Default true when an adapter exists. */
+  adapterImage?: boolean;
+  /**
+   * Fixed aspect ratio for the media area, e.g. "16/9", "1/1". A media
+   * concern (the component owns its own image box) — not a layout concern.
+   */
+  aspect?: string;
+}
+
+/** A thin card entry for CardGrid: a grid of Cards + one shared detail modal. */
+export interface ProjectCardData {
+  /** Stable identifier; also the detail slug forwarded to ProjectModal. */
+  slug: string;
+  title: string;
+  description?: string;
+  tags?: string[];
+  /** Repository URL shown in the detail modal. */
+  repo?: string;
+  /** When set, the card links here instead of opening the detail modal. */
+  url?: string;
+  /** Formatted date shown top-right. */
+  date?: string;
+  /* Media, forwarded to the Card */
+  thumbnail?: string;
+  thumbnailPath?: string;
+  thumbnailDefaultsId?: boolean;
+  defaultThumbnail?: string;
+  thumbnailAlt?: string;
+  aspect?: string;
+  /** Optional grouping hint (e.g. 'featured' | 'uni' | 'snippets'). Host-facing data only — the library does not group. */
+  category?: string;
 }
 
 /** A row of tag chips. */

@@ -18,6 +18,7 @@ import ProjectRenderer from './ProjectRenderer.vue';
 import Glitch from './glitch/Glitch.vue';
 import GlitchText from './GlitchText.vue';
 import GlitchImage from './GlitchImage.vue';
+import CardGrid from './CardGrid.vue';
 
 export {
   Panel,
@@ -28,6 +29,7 @@ export {
   Modal,
   ProjectModal,
   Card,
+  CardGrid,
   Tooltip,
   TypeWriter,
   LotusIcon,
@@ -64,6 +66,9 @@ export { useGlitchState, useNameCycler } from './glitch';
 export type { UseGlitchStateOptions } from './glitch';
 
 export type { NavLinkItem } from './Nav.vue';
+
+// Shared data shapes (single source of truth in core).
+export type { ProjectCardData, CardProps } from '../core/types';
 
 /** Shape of a single panel entry. */
 export interface PanelData {
@@ -109,6 +114,7 @@ export const LotusLibrary = {
     app.component('LotusGlitch', Glitch);
     app.component('LotusGlitchText', GlitchText);
     app.component('LotusGlitchImage', GlitchImage);
+    app.component('LotusCardGrid', CardGrid);
     app.component('Panel', Panel);
     app.component('PanelGrid', PanelGrid);
     app.component('Tags', Tags);
@@ -119,7 +125,6 @@ export const LotusLibrary = {
     app.component('Card', Card);
     app.component('Tooltip', Tooltip);
     app.component('TypeWriter', TypeWriter);
-    app.component('LotusIcon', LotusIcon);
     app.component('Embed', Embed);
     app.component('Nav', Nav);
     app.component('Footer', Footer);
@@ -127,6 +132,7 @@ export const LotusLibrary = {
     app.component('Glitch', Glitch);
     app.component('GlitchText', GlitchText);
     app.component('GlitchImage', GlitchImage);
+    app.component('CardGrid', CardGrid);
   },
 };
 

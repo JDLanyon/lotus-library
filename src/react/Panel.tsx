@@ -1,5 +1,6 @@
 import * as React from 'react';
 import type { PanelData } from '../core/types';
+import { resolveThumbnail } from '../core/utils';
 import { Tags } from './Tags';
 
 export interface PanelProps extends PanelData {
@@ -12,30 +13,10 @@ export interface PanelProps extends PanelData {
   defaultThumbnail?: string;
 }
 
-function resolveThumbnail(
-  thumbnail: string | undefined,
-  thumbnailPath: string | undefined,
-  panelId: string,
-  thumbnailDefaultsId: boolean,
-  defaultThumbnail: string,
-): string | undefined {
-  // Absolute URLs and root-relative paths pass through untouched.
-  if (thumbnail && (/^(https?:)?\/\//.test(thumbnail) || thumbnail.startsWith('/'))) {
-    return thumbnail;
-  }
-  if (!thumbnailPath) return thumbnail;
-  const base = thumbnailPath.replace(/\/$/, '');
-  if (thumbnailDefaultsId) {
-    // One thumbnail per panel folder: base/<id>/<file or default>.
-    return `${base}/${panelId}/${thumbnail ?? defaultThumbnail}`;
-  }
-  if (!thumbnail) return undefined;
-  return `${base}/${thumbnail}`;
-}
-
 /**
  * A single image-featured panel. Renders an <a> (or the supplied
  * `linkComponent`) wrapping a cover image, title, description and tags.
+ * Thumbnail URL rules are shared with Card via `resolveThumbnail` (core).
  */
 export function Panel({
   id,

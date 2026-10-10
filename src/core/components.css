@@ -493,6 +493,65 @@
   margin-top: 0.75rem;
 }
 
+/* Media area (thumbnail / custom slot). Cropped to the box; `aspect` prop
+   overrides the default 16/10 via an inline style. */
+.lotus-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  margin: -0.25rem 0 0.75rem;
+  background: var(--lotus-border-color);
+  border-radius: var(--lotus-radius);
+}
+
+.lotus-card-media-img,
+.lotus-card-media > img,
+.lotus-card-media > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Card sizing presets (React + Vue share these). */
+.lotus-card--full {
+  width: 100%;
+}
+
+.lotus-card--compact {
+  padding: 0.75rem;
+}
+
+.lotus-card--compact .lotus-card-title {
+  font-size: 1rem;
+}
+
+.lotus-card--compact .lotus-card-desc {
+  margin-bottom: 0.5rem;
+}
+
+/* Equal-height behaviour for grid use (the card becomes a column flexbox). */
+.lotus-card--fill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.lotus-card--fill .lotus-card-body {
+  flex: 1;
+}
+
+/* CardGrid — a thin convenience wrapper. The library ships ONE sensible
+ * default (responsive auto-fill). LAYOUT IS THE HOST'S JOB: override with your
+ * own `.lotus-card-grid` rule / `className`. There is no mosaic engine here. */
+.lotus-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
 /* ------------------------------------------------------------------ *
  * Tooltip
  * ------------------------------------------------------------------ */

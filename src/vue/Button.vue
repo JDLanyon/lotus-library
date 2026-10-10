@@ -3,42 +3,91 @@
   On hover the label plays the global glitch effect and the border fills with
   --primary (color-burn). Emits `click`; navigates via href (external links open
   in a new tab).
+
+  NOTE: the root is rendered by two explicit branches — a native <button> when
+  there is no `href`, and <component :is="linkComponent"> when there is. We do
+  NOT use `<component :is="href ? linkComponent : 'button'">`: Vue's dynamic
+  resolution is case-insensitive, so the lowercase tag `'button'` would resolve
+  back to a globally-registered `Button` and recurse infinitely during SSR.
 -->
 <template>
-  <component
-    :is="href ? linkComponent : 'button'"
-    :href="href || undefined"
-    :type="href ? undefined : 'button'"
+  <button
+    v-if="!href"
+    type="button"
     :class="['lotus-btn', buttonClasses]"
     :title="title"
-    :disabled="href ? undefined : disabled"
-    :target="href && (targetBlank || isExternal) ? '_blank' : undefined"
-    :rel="href && (targetBlank || isExternal) ? 'noopener noreferrer' : undefined"
+    :disabled="disabled"
     @mouseenter="triggerGlitch"
     @click="$emit('click', $event)"
   >
-    <span v-if="arrow === 'left'" class="lotus-btn-arrow">&larr;</span>
-    <span class="lotus-btn-text">
-      <span class="glitch-text-wrap" :class="{ 'is-glitching': isGlitching }">
-        <span class="glitch-base"><slot /></span>
-        <span class="glitch-chroma glitch-chroma-r" aria-hidden="true"><slot /></span>
-        <span class="glitch-chroma glitch-chroma-g" aria-hidden="true"><slot /></span>
-        <span class="glitch-chroma glitch-chroma-b" aria-hidden="true"><slot /></span>
-        <span class="glitch-chroma glitch-chroma-c" aria-hidden="true"><slot /></span>
-        <span class="glitch-chroma glitch-chroma-m" aria-hidden="true"><slot /></span>
-        <span class="glitch-chroma glitch-chroma-y" aria-hidden="true"><slot /></span>
-        <span class="glitch-motion-blur" aria-hidden="true" />
-      </span>
-    </span>
-    <span v-if="arrow && arrow !== 'left'" class="lotus-btn-arrow">{{ arrowGlyph }}</span>
+    <ButtonInner :arrow="arrow" :arrow-glyph="arrowGlyph" :is-glitching="isGlitching">
+      <slot />
+    </ButtonInner>
+  </button>
+
+  <component
+    v-else
+    :is="linkComponent"
+    :href="href"
+    :class="['lotus-btn', buttonClasses]"
+    :title="title"
+    :target="targetBlank || isExternal ? '_blank' : undefined"
+    :rel="targetBlank || isExternal ? 'noopener noreferrer' : undefined"
+    @mouseenter="triggerGlitch"
+    @click="$emit('click', $event)"
+  >
+    <ButtonInner :arrow="arrow" :arrow-glyph="arrowGlyph" :is-glitching="isGlitching">
+      <slot />
+    </ButtonInner>
   </component>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, h, ref, type Slots, type VNode } from 'vue'
 
 type ArrowDir = 'left' | 'right' | 'up' | 'down'
 type PadY = 'none' | 'sm' | 'md' | 'lg'
+
+/**
+ * Shared inner markup (arrows + glitch layers). A functional component so both
+ * root branches render identical content; the default slot is forwarded once
+ * to every glitch layer.
+ */
+const ButtonInner = (
+  props: { arrow?: ArrowDir; arrowGlyph: string; isGlitching: boolean },
+  { slots }: { slots: Slots },
+) => {
+  const { arrow, arrowGlyph, isGlitching } = props
+  const render = (): VNode[] => slots.default?.() ?? []
+  return [
+    arrow === 'left' ? h('span', { class: 'lotus-btn-arrow' }, '\u2190') : null,
+    h('span', { class: 'lotus-btn-text' }, [
+      h(
+        'span',
+        { class: ['glitch-text-wrap', { 'is-glitching': isGlitching }] },
+        [
+          h('span', { class: 'glitch-base' }, render()),
+          ...['r', 'g', 'b', 'c', 'm', 'y'].map((c) =>
+            h(
+              'span',
+              { class: `glitch-chroma glitch-chroma-${c}`, 'aria-hidden': 'true' },
+              render(),
+            ),
+          ),
+          h('span', { class: 'glitch-motion-blur', 'aria-hidden': 'true' }),
+        ],
+      ),
+    ]),
+    arrow && arrow !== 'left'
+      ? h('span', { class: 'lotus-btn-arrow' }, arrowGlyph)
+      : null,
+  ]
+}
+ButtonInner.props = {
+  arrow: { type: String, default: undefined },
+  arrowGlyph: { type: String, default: '' },
+  isGlitching: { type: Boolean, default: false },
+}
 
 const props = defineProps({
   href: { type: String, default: undefined },
@@ -46,7 +95,7 @@ const props = defineProps({
   arrow: { type: String as () => ArrowDir, default: undefined },
   title: { type: String, default: undefined },
   disabled: { type: Boolean, default: false },
-  linkComponent: { type: String, default: 'a' },
+  linkComponent: { type: [String, Object], default: 'a' },
   className: { type: String, default: '' },
   glitchCooldown: { type: Number, default: 400 },
   /** Render the 1px border. Default true. */
@@ -93,3 +142,4 @@ function triggerGlitch() {
   }, 350)
 }
 </script>
+

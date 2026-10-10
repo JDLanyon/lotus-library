@@ -41,11 +41,14 @@ export function Modal({
   signature,
   children,
 }: ModalProps) {
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Client-detection without a setState-in-effect: useSyncExternalStore returns
+  // false during SSR and true on the client, which is exactly what we need to
+  // portal safely after hydration.
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   React.useEffect(() => {
     if (!open || !closeOnEscape) return;
