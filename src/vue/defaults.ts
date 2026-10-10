@@ -5,7 +5,9 @@
  * other module-scope variables declared in the same SFC.
  */
 import type { Component } from 'vue';
-import { SiGithub, SiInstagram, SiYoutube } from 'vue-simple-icons';
+// `vue-simple-icons` (v7) exports *Icon-suffixed names; the `Si*` prefix belongs
+// to the React package. Imported and used here, behind the optional peer.
+import { GitHubIcon, InstagramIcon, YouTubeIcon } from 'vue-simple-icons';
 import { Linkedin } from 'lucide-vue-next';
 
 export interface NavLinkItem {
@@ -28,8 +30,8 @@ export const DEFAULT_NAV_LINKS: NavLinkItem[] = [
 ];
 
 export const DEFAULT_FOOTER_LINKS: FooterLink[] = [
-  { href: 'https://github.com/JDLanyon', icon: SiGithub, label: 'GitHub' },
+  { href: 'https://github.com/JDLanyon', icon: GitHubIcon, label: 'GitHub' },
   { href: 'https://www.linkedin.com/in/jdlanyon/', icon: Linkedin, label: 'LinkedIn' },
-  { href: 'https://www.youtube.com/@sausytime', icon: SiYoutube, label: 'YouTube' },
-  { href: 'https://www.instagram.com/sausytime/', icon: SiInstagram, label: 'Instagram' },
+  { href: 'https://www.youtube.com/@sausytime', icon: YouTubeIcon, label: 'YouTube' },
+  { href: 'https://www.instagram.com/sausytime/', icon: InstagramIcon, label: 'Instagram' },
 ];

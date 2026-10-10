@@ -16,6 +16,8 @@ import Nav from './Nav.vue';
 import Footer from './Footer.vue';
 import ProjectRenderer from './ProjectRenderer.vue';
 import Glitch from './glitch/Glitch.vue';
+import GlitchText from './GlitchText.vue';
+import GlitchImage from './GlitchImage.vue';
 
 export {
   Panel,
@@ -34,6 +36,8 @@ export {
   Footer,
   ProjectRenderer,
   Glitch,
+  GlitchText,
+  GlitchImage,
 };
 
 // Adapter + theme (context/injection-based routing). The Vue adapter also
@@ -103,6 +107,8 @@ export const LotusLibrary = {
     app.component('LotusFooter', Footer);
     app.component('LotusProjectRenderer', ProjectRenderer);
     app.component('LotusGlitch', Glitch);
+    app.component('LotusGlitchText', GlitchText);
+    app.component('LotusGlitchImage', GlitchImage);
     app.component('Panel', Panel);
     app.component('PanelGrid', PanelGrid);
     app.component('Tags', Tags);
@@ -119,5 +125,8 @@ export const LotusLibrary = {
     app.component('Footer', Footer);
     app.component('ProjectRenderer', ProjectRenderer);
     app.component('Glitch', Glitch);
+    app.component('GlitchText', GlitchText);
+    app.component('GlitchImage', GlitchImage);
   },
 };
+

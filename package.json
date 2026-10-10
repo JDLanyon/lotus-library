@@ -78,7 +78,7 @@
     "lucide-react": ">=0.400",
     "@icons-pack/react-simple-icons": ">=10",
     "lucide-vue-next": ">=0.400",
-    "vue-simple-icons": ">=6"
+    "vue-simple-icons": ">=7"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -106,11 +106,7 @@
       "optional": true
     }
   },
-  "dependencies": {
-    "next": "16.2.1",
-    "react": ">=18",
-    "react-dom": ">=18"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@chromatic-com/storybook": "^5.4.0",
     "@semantic-release/changelog": "^6.0.3",
@@ -135,6 +131,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "eslint-plugin-storybook": "^10.6.1",
+    "next": "16.2.1",
     "semantic-release": "^24.2.9",
     "storybook": "^10.6.1",
     "tailwindcss": "^4",
@@ -149,3 +146,4 @@
     "url": "git+https://github.com/JDLanyon/lotus-library.git"
   }
 }
+
