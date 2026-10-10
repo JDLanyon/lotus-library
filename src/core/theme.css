@@ -29,8 +29,33 @@
   --lotus-border-color: #222;
 }
 
-/* Base font for lotus components. */
-:where(.lotus-modal-container, .lotus-btn, .lotus-panel, .lotus-glitch-link) {
+/* Base font for lotus components.
+ *
+ * `--lotus-font-sans` is the single opt-in font token. Consumers can set it to
+ * their own typeface (e.g. via next/font:
+ * `--lotus-font-sans: var(--font-merriweather)`) and every lotus component
+ * inherits it. Components also carry `font-family: inherit` so a host with a
+ * global body font flows through even if the token is left unset. */
+:where(
+    .lotus-modal-container,
+    .lotus-modal-signature,
+    .lotus-btn,
+    .lotus-panel,
+    .lotus-panel-title,
+    .lotus-panel-desc,
+    .lotus-tag,
+    .lotus-card,
+    .lotus-tooltip-text,
+    .lotus-typewriter,
+    .lotus-nav,
+    .lotus-nav-link,
+    .lotus-nav-icon-btn,
+    .lotus-footer,
+    .lotus-footer-link,
+    .lotus-glitch-link,
+    .lotus-embed,
+    .lotus-project-content
+  ) {
   font-family: var(--lotus-font-sans);
 }
 

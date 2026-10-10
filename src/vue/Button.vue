@@ -9,7 +9,7 @@
     :is="href ? linkComponent : 'button'"
     :href="href || undefined"
     :type="href ? undefined : 'button'"
-    :class="['lotus-btn', className]"
+    :class="['lotus-btn', buttonClasses]"
     :title="title"
     :disabled="href ? undefined : disabled"
     :target="href && (targetBlank || isExternal) ? '_blank' : undefined"
@@ -38,6 +38,7 @@
 import { computed, ref } from 'vue'
 
 type ArrowDir = 'left' | 'right' | 'up' | 'down'
+type PadY = 'none' | 'sm' | 'md' | 'lg'
 
 const props = defineProps({
   href: { type: String, default: undefined },
@@ -48,8 +49,26 @@ const props = defineProps({
   linkComponent: { type: String, default: 'a' },
   className: { type: String, default: '' },
   glitchCooldown: { type: Number, default: 400 },
+  /** Render the 1px border. Default true. */
+  border: { type: Boolean, default: true },
+  /** Vertical padding preset. Default 'md'. */
+  paddingY: { type: String as () => PadY, default: 'md' },
+  /** Hover fills with the host background so dynamic backgrounds show through. */
+  invertOnHover: { type: Boolean, default: false },
 })
 defineEmits<{ click: [event: MouseEvent] }>()
+
+/** Composed modifier classes (variant + caller className). */
+const buttonClasses = computed(() =>
+  [
+    props.invertOnHover ? 'lotus-btn--invert-hover' : '',
+    !props.border ? 'lotus-btn--borderless' : '',
+    props.paddingY !== 'md' ? `lotus-btn--pad-${props.paddingY}` : '',
+    props.className,
+  ]
+    .filter(Boolean)
+    .join(' '),
+)
 
 const ARROWS: Record<ArrowDir, string> = {
   left: '\u2190',

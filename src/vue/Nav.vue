@@ -17,7 +17,7 @@
     </div>
 
     <component :is="Link" href="/" class="lotus-nav-logo">
-      <component :is="Image" class="lotus-nav-logo-img" :src="logoSrc" :width="64" :height="64" alt="lotus" />
+      <component :is="Image" :class="logoClasses" :src="logoSrc" :width="64" :height="64" alt="lotus" />
     </component>
 
     <div class="lotus-nav-group lotus-nav-group-right">
@@ -55,9 +55,10 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref } from 'vue';
+import { computed, h, ref } from 'vue';
 import { Menu, X } from 'lucide-vue-next';
 import { useAdapter } from './adapter';
+import GlitchLink from './GlitchLink.vue';
 import { DEFAULT_NAV_LINKS, type NavLinkItem } from './defaults';
 
 export type { NavLinkItem };
@@ -70,6 +71,12 @@ const props = withDefaults(
     /** Layout variant. v0.1.6 ships 'classic' only. */
     layout?: 'classic';
     className?: string;
+    /** Render nav links via <GlitchLink>. Default false. */
+    glitchLinks?: boolean;
+    /** Class(es) applied to the logo <img>. */
+    logoClassName?: string;
+    /** Invert the logo on dark themes. Default true. */
+    logoInvert?: boolean;
   }>(),
   {
     links: () => DEFAULT_NAV_LINKS,
@@ -77,6 +84,9 @@ const props = withDefaults(
     ariaLabel: 'Primary',
     layout: 'classic',
     className: '',
+    glitchLinks: false,
+    logoClassName: '',
+    logoInvert: true,
   },
 );
 
@@ -85,15 +95,40 @@ const pathname = usePathname();
 const isMenuOpen = ref(false);
 const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
 
+const logoClasses = computed(() =>
+  [
+    'lotus-nav-logo-img',
+    !props.logoInvert ? 'lotus-nav-logo-img--no-invert' : '',
+    props.logoClassName,
+  ]
+    .filter(Boolean)
+    .join(' '),
+);
+
 function renderLink(l: NavLinkItem, onClick?: () => void) {
   const isActive = pathname === l.href;
+  const linkClass = ['lotus-nav-link', isActive ? 'is-active' : ''];
+
+  if (props.glitchLinks) {
+    return h(
+      GlitchLink,
+      {
+        href: l.href,
+        onClick,
+        class: linkClass,
+        linkComponent: Link,
+      },
+      () => l.name,
+    );
+  }
+
   return h(
     Link,
     {
       href: l.href,
       rel: 'noopener noreferrer',
       onClick,
-      class: ['lotus-nav-link', isActive ? 'is-active' : ''],
+      class: linkClass,
     },
     () => l.name,
   );

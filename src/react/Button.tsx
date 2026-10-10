@@ -22,6 +22,15 @@ export interface ButtonProps {
   glitchOnHover?: boolean;
   /** Minimum ms between glitch triggers. */
   glitchCooldown?: number;
+  /** Render the 1px border. Set false for text/inline buttons. Default true. */
+  border?: boolean;
+  /** Vertical padding preset. Default 'md' (the baseline in components.css). */
+  paddingY?: 'none' | 'sm' | 'md' | 'lg';
+  /**
+   * On hover, fill with the host background instead of --primary so any
+   * dynamic background behind the button shows through. Default false.
+   */
+  invertOnHover?: boolean;
   onClick?: React.MouseEventHandler;
   className?: string;
   children?: React.ReactNode;
@@ -38,6 +47,10 @@ const ARROWS: Record<ButtonArrow, string> = {
  * Blocky button. Renders a <button> by default, or an anchor when `href` is
  * supplied (using `linkComponent` if provided). On hover the label plays the
  * global glitch effect and the border fills with --primary.
+ *
+ * Variants: `border={false}` (borderless), `paddingY` (vertical padding),
+ * `invertOnHover` (hover fills with the host background so dynamic backgrounds
+ * show through).
  */
 export function Button({
   text,
@@ -49,6 +62,9 @@ export function Button({
   linkComponent: LinkComponent,
   glitchOnHover = true,
   glitchCooldown = 350,
+  border = true,
+  paddingY = 'md',
+  invertOnHover = false,
   onClick,
   className = '',
   children,
@@ -85,7 +101,15 @@ export function Button({
     </>
   );
 
-  const classes = `lotus-btn ${className}`.trim();
+  const classes = [
+    'lotus-btn',
+    invertOnHover ? 'lotus-btn--invert-hover' : '',
+    !border ? 'lotus-btn--borderless' : '',
+    paddingY !== 'md' ? `lotus-btn--pad-${paddingY}` : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
   const isExternal = href ? /^https?:\/\//.test(href) : false;
 
   if (href) {

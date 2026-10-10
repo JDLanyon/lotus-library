@@ -269,6 +269,45 @@
   border-color: var(--lotus-primary);
 }
 
+/* Borderless variant: no border in any state, keeps fill/glitch behaviour. */
+.lotus-btn--borderless,
+.lotus-btn.lotus-btn--borderless {
+  border-color: transparent;
+}
+
+.lotus-btn--borderless:hover:not(:disabled),
+.lotus-btn--borderless:focus-visible {
+  border-color: transparent;
+}
+
+/* Invert-on-hover variant: the fill uses the host background so any dynamic
+   background behind the button shows through. Intended for buttons that sit
+   over images/video/patterns. */
+.lotus-btn--invert-hover:hover:not(:disabled),
+.lotus-btn--invert-hover:focus-visible {
+  background-color: var(--lotus-background);
+  background-image: none;
+  background-blend-mode: normal;
+  color: var(--lotus-primary);
+  border-color: var(--lotus-primary);
+}
+
+/* Vertical-padding presets (horizontal padding stays constant). */
+.lotus-btn--pad-none {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.lotus-btn--pad-sm {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+
+.lotus-btn--pad-lg {
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
 .lotus-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
@@ -595,6 +634,15 @@
 .lotus-nav-logo-img {
   width: 64px;
   height: 64px;
+}
+
+/* Legibility on dark themes: the bundled lotus.svg is near-black, so invert it
+   automatically. Consumers can opt out with `.lotus-nav-logo-img--no-invert`,
+   or supply their own light/dark asset via `logoSrc`. */
+[data-theme="dark"] .lotus-nav-logo-img:not(.lotus-nav-logo-img--no-invert),
+.lotus-dark .lotus-nav-logo-img:not(.lotus-nav-logo-img--no-invert),
+.dark .lotus-nav-logo-img:not(.lotus-nav-logo-img--no-invert) {
+  filter: invert(1);
 }
 
 .lotus-nav-link {

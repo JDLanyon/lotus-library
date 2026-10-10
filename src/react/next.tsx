@@ -8,6 +8,7 @@ import {
   useRouter as useNextRouter,
 } from 'next/navigation';
 import { LotusAdapterProvider } from './adapter';
+import { LotusThemeProvider, type ThemeController } from './theme';
 import type {
   ImageProps,
   LinkProps,
@@ -23,6 +24,13 @@ import type {
  *
  * It installs `next/link`, `next/image` and `next/navigation`'s usePathname
  * as the renderers every Lotus component uses under the hood.
+ *
+ * `themeController` (optional) forwards a host-owned theme state (e.g.
+ * `next-themes`) into the library's theme context, so <Footer>'s ThemeSwitch
+ * reflects and updates the real theme without a separate <LotusThemeProvider>.
+ * Pass `{ theme, setTheme }` from `useTheme()` (next-themes):
+ *
+ *   <LotusNextProvider themeController={{ theme, setTheme }}>
  *
  * Note: `<Link>` renders an `<a>`, accepts normal anchor props, and no longer
  * needs a child `<a>`.
@@ -60,7 +68,14 @@ function useAdaptedRouter(): LotusRouter {
   );
 }
 
-export function LotusNextProvider({ children }: { children: React.ReactNode }) {
+export function LotusNextProvider({
+  children,
+  themeController,
+}: {
+  children: React.ReactNode;
+  /** Optional host-owned theme state forwarded into the library theme context. */
+  themeController?: ThemeController;
+}) {
   const adapter = React.useMemo(
     () => ({
       Link: AdaptedLink,
@@ -71,7 +86,13 @@ export function LotusNextProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  return (
+  const tree = (
     <LotusAdapterProvider adapter={adapter}>{children}</LotusAdapterProvider>
+  );
+
+  if (!themeController) return tree;
+
+  return (
+    <LotusThemeProvider controller={themeController}>{tree}</LotusThemeProvider>
   );
 }

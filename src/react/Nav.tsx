@@ -3,6 +3,7 @@
 import * as React from 'react';
 import type { ImageProps, LinkProps } from '../core/types';
 import { useAdapter } from './adapter';
+import { GlitchLink } from './GlitchLink';
 
 /**
  * Icon dependencies are OPTIONAL peers. Only apps that render <Nav> need to
@@ -31,6 +32,21 @@ export interface NavProps {
   layout?: 'classic';
   /** Extra class(es) appended to `.lotus-nav`. */
   className?: string;
+  /**
+   * Render nav links through <GlitchLink> (glitch-hover underline) instead of
+   * a bare adapter <Link>. Default false. Routing is preserved via the adapter.
+   */
+  glitchLinks?: boolean;
+  /**
+   * Class(es) applied to the logo <img>. Use to control its size/appearance.
+   * Defaults to `.lotus-nav-logo-img`.
+   */
+  logoClassName?: string;
+  /**
+   * Invert the logo on dark themes for legibility (default true; the bundled
+   * lotus.svg is near-black). Set false when shipping a light/dark pair.
+   */
+  logoInvert?: boolean;
   /** Optional right-aligned slot rendered inside the mobile drawer. */
   children?: React.ReactNode;
 }
@@ -52,6 +68,9 @@ export function Nav({
   logoSrc = '/lotus.svg',
   ariaLabel = 'Primary',
   className = '',
+  glitchLinks = false,
+  logoClassName = '',
+  logoInvert = true,
   children,
 }: NavProps) {
   const { Link, Image, usePathname } = useAdapter();
@@ -64,18 +83,42 @@ export function Nav({
 
   const renderLink = (l: NavLinkItem, onClick?: () => void) => {
     const isActive = pathname === l.href;
+    const linkClass = `lotus-nav-link${isActive ? ' is-active' : ''}`;
+
+    if (glitchLinks) {
+      return (
+        <GlitchLink
+          key={l.href}
+          href={l.href}
+          onClick={onClick}
+          className={linkClass}
+          linkComponent={LinkComponent}
+        >
+          {l.name}
+        </GlitchLink>
+      );
+    }
+
     return (
       <LinkComponent
         key={l.href}
         href={l.href}
         rel="noopener noreferrer"
         onClick={onClick}
-        className={`lotus-nav-link${isActive ? ' is-active' : ''}`}
+        className={linkClass}
       >
         {l.name}
       </LinkComponent>
     );
   };
+
+  const logoClasses = [
+    'lotus-nav-logo-img',
+    !logoInvert ? 'lotus-nav-logo-img--no-invert' : '',
+    logoClassName,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <nav aria-label={ariaLabel} className={`lotus-nav ${className}`.trim()}>
@@ -85,7 +128,7 @@ export function Nav({
 
       <LinkComponent href="/" className="lotus-nav-logo">
         <ImageComponent
-          className="lotus-nav-logo-img"
+          className={logoClasses}
           src={logoSrc}
           width={64}
           height={64}

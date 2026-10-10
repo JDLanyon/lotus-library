@@ -3,7 +3,8 @@
   Vue counterpart of the React <GlitchLink>. No JS animation loop, SSR safe.
 -->
 <template>
-  <a
+  <component
+    :is="linkComponent"
     :href="href"
     class="lotus-glitch-link"
     :target="target"
@@ -22,7 +23,7 @@
       <span class="glitch-motion-blur" aria-hidden="true" />
     </span>
     <span class="lotus-glitch-underline" aria-hidden="true" />
-  </a>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -36,8 +37,10 @@ const props = withDefaults(
     underlineDuration?: number
     target?: string
     rel?: string
+    /** Override the anchor component (e.g. a host router Link). */
+    linkComponent?: string | object
   }>(),
-  { text: '', cooldown: 1000 },
+  { text: '', cooldown: 1000, linkComponent: 'a' },
 )
 
 defineEmits<{ click: [event: MouseEvent] }>()

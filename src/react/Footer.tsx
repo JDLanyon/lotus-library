@@ -6,6 +6,7 @@ import { useAdapter } from './adapter';
 import { useTheme, useMounted } from './theme';
 import { Button } from './Button';
 import { Tooltip } from './Tooltip';
+import { GlitchLink } from './GlitchLink';
 
 /**
  * Icon dependencies are OPTIONAL peers. Only apps that render <Footer> need
@@ -23,6 +24,11 @@ export interface FooterProps {
   links?: Array<{ href: string; label: string; icon: React.ComponentType<{ color?: string }> }>;
   /** Extra class(es) appended to `.lotus-footer`. */
   className?: string;
+  /**
+   * Render social links through <GlitchLink> (glitch-hover underline) instead
+   * of a bare adapter <Link>. Default false. Routing is preserved.
+   */
+  glitchLinks?: boolean;
 }
 
 const DEFAULT_LINKS = [
@@ -76,6 +82,7 @@ export function Footer({
   landingPage = false,
   links = DEFAULT_LINKS,
   className = '',
+  glitchLinks = false,
 }: FooterProps) {
   const { Link } = useAdapter();
   const LinkComponent = Link as React.ComponentType<LinkProps>;
@@ -84,18 +91,39 @@ export function Footer({
     <footer
       className={`lotus-footer${landingPage ? ' is-landing' : ''} ${className}`.trim()}
     >
-      {links.map(({ href, icon: Icon, label }) => (
-        <LinkComponent
-          key={href}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="lotus-footer-link"
-        >
-          <Icon color="var(--lotus-secondary)" />
-          <p>{label}</p>
-        </LinkComponent>
-      ))}
+      {links.map(({ href, icon: Icon, label }) => {
+        const inner = (
+          <>
+            <Icon color="var(--lotus-secondary)" />
+            <p>{label}</p>
+          </>
+        );
+
+        if (glitchLinks) {
+          return (
+            <GlitchLink
+              key={href}
+              href={href}
+              linkComponent={LinkComponent}
+              className="lotus-footer-link"
+            >
+              {inner}
+            </GlitchLink>
+          );
+        }
+
+        return (
+          <LinkComponent
+            key={href}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="lotus-footer-link"
+          >
+            {inner}
+          </LinkComponent>
+        );
+      })}
       <ThemeSwitch />
     </footer>
   );

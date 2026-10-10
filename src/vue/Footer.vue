@@ -7,18 +7,32 @@
 -->
 <template>
   <footer :class="['lotus-footer', { 'is-landing': landingPage }, className]">
-    <component
-      :is="Link"
-      v-for="s in links"
-      :key="s.href"
-      :href="s.href"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="lotus-footer-link"
-    >
-      <component :is="s.icon" color="var(--lotus-secondary)" />
-      <p>{{ s.label }}</p>
-    </component>
+    <template v-if="glitchLinks">
+      <GlitchLink
+        v-for="s in links"
+        :key="s.href"
+        :href="s.href"
+        :link-component="Link"
+        class="lotus-footer-link"
+      >
+        <component :is="s.icon" color="var(--lotus-secondary)" />
+        <p>{{ s.label }}</p>
+      </GlitchLink>
+    </template>
+    <template v-else>
+      <component
+        :is="Link"
+        v-for="s in links"
+        :key="s.href"
+        :href="s.href"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="lotus-footer-link"
+      >
+        <component :is="s.icon" color="var(--lotus-secondary)" />
+        <p>{{ s.label }}</p>
+      </component>
+    </template>
 
     <Tooltip :text="tooltipText">
       <Button aria-label="Toggle theme" @click="cycleTheme">
@@ -36,6 +50,7 @@ import { useTheme, useMounted } from './theme';
 import { DEFAULT_FOOTER_LINKS, type FooterLink } from './defaults';
 import Button from './Button.vue';
 import Tooltip from './Tooltip.vue';
+import GlitchLink from './GlitchLink.vue';
 
 export type { FooterLink };
 
@@ -44,11 +59,14 @@ withDefaults(
     landingPage?: boolean;
     links?: FooterLink[];
     className?: string;
+    /** Render social links via <GlitchLink>. Default false. */
+    glitchLinks?: boolean;
   }>(),
   {
     landingPage: false,
     links: () => DEFAULT_FOOTER_LINKS,
     className: '',
+    glitchLinks: false,
   },
 );
 
