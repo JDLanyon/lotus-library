@@ -98,8 +98,10 @@ const props = defineProps({
   linkComponent: { type: [String, Object], default: 'a' },
   className: { type: String, default: '' },
   glitchCooldown: { type: Number, default: 400 },
-  /** Render the 1px border. Default true. */
-  border: { type: Boolean, default: true },
+  /** Render the resting 1px border. Default false (borderless). */
+  bordered: { type: Boolean, default: false },
+  /** @deprecated Use `bordered` (inverted). `border` maps to `bordered`. */
+  border: { type: Boolean, default: undefined },
   /** Vertical padding preset. Default 'md'. */
   paddingY: { type: String as () => PadY, default: 'md' },
   /** Hover fills with the host background so dynamic backgrounds show through. */
@@ -108,16 +110,18 @@ const props = defineProps({
 defineEmits<{ click: [event: MouseEvent] }>()
 
 /** Composed modifier classes (variant + caller className). */
-const buttonClasses = computed(() =>
-  [
+const buttonClasses = computed(() => {
+  // `border` is a deprecated alias for `bordered`.
+  const isBordered = props.border !== undefined ? props.border : props.bordered
+  return [
     props.invertOnHover ? 'lotus-btn--invert-hover' : '',
-    !props.border ? 'lotus-btn--borderless' : '',
+    isBordered ? 'lotus-bordered' : '',
     props.paddingY !== 'md' ? `lotus-btn--pad-${props.paddingY}` : '',
     props.className,
   ]
     .filter(Boolean)
-    .join(' '),
-)
+    .join(' ')
+})
 
 const ARROWS: Record<ArrowDir, string> = {
   left: '\u2190',

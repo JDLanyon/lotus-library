@@ -22,7 +22,12 @@ export interface ButtonProps {
   glitchOnHover?: boolean;
   /** Minimum ms between glitch triggers. */
   glitchCooldown?: number;
-  /** Render the 1px border. Set false for text/inline buttons. Default true. */
+  /** Render the resting 1px border. Default false (borderless). */
+  bordered?: boolean;
+  /**
+   * @deprecated Use `bordered` (inverted). Kept for back-compat: `border={true}`
+   * maps to `bordered`.
+   */
   border?: boolean;
   /** Vertical padding preset. Default 'md' (the baseline in components.css). */
   paddingY?: 'none' | 'sm' | 'md' | 'lg';
@@ -48,9 +53,9 @@ const ARROWS: Record<ButtonArrow, string> = {
  * supplied (using `linkComponent` if provided). On hover the label plays the
  * global glitch effect and the border fills with --primary.
  *
- * Variants: `border={false}` (borderless), `paddingY` (vertical padding),
- * `invertOnHover` (hover fills with the host background so dynamic backgrounds
- * show through).
+ * Variants: `bordered` (resting border, default off), `paddingY` (vertical
+ * padding), `invertOnHover` (hover fills with the host background so dynamic
+ * backgrounds show through).
  */
 export function Button({
   text,
@@ -62,13 +67,16 @@ export function Button({
   linkComponent: LinkComponent,
   glitchOnHover = true,
   glitchCooldown = 350,
-  border = true,
+  bordered = false,
+  border,
   paddingY = 'md',
   invertOnHover = false,
   onClick,
   className = '',
   children,
 }: ButtonProps) {
+  // `border` is a deprecated alias for `bordered`.
+  const isBordered = border !== undefined ? border : bordered;
   const glitchRef = React.useRef<GlitchHandle>(null);
   const lastGlitch = React.useRef(0);
   const label = children ?? text;
@@ -104,7 +112,7 @@ export function Button({
   const classes = [
     'lotus-btn',
     invertOnHover ? 'lotus-btn--invert-hover' : '',
-    !border ? 'lotus-btn--borderless' : '',
+    isBordered ? 'lotus-bordered' : '',
     paddingY !== 'md' ? `lotus-btn--pad-${paddingY}` : '',
     className,
   ]

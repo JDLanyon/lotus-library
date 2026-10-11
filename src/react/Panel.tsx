@@ -9,6 +9,8 @@ export interface PanelProps extends PanelData {
   /** Override the anchor component (e.g. Next's <Link>). */
   linkComponent?: React.ElementType;
   className?: string;
+  /** Render the resting 1px border. Default false (borderless). */
+  bordered?: boolean;
   thumbnailDefaultsId?: boolean;
   defaultThumbnail?: string;
 }
@@ -29,6 +31,7 @@ export function Panel({
   basePath,
   linkComponent: LinkComponent = 'a',
   className = '',
+  bordered = false,
   thumbnailDefaultsId = false,
   defaultThumbnail = 'thumbnail.png',
 }: PanelProps) {
@@ -45,7 +48,7 @@ export function Panel({
   return (
     <LinkComponent
       href={target}
-      className={`lotus-panel ${className}`.trim()}
+      className={`lotus-panel ${bordered ? 'lotus-bordered ' : ''}${className}`.trim()}
       aria-label={label}
     >
       {src ? (

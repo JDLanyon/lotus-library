@@ -144,6 +144,8 @@ export interface CardProps {
   ariaLabel?: string;
   /** Extra class(es) appended to `.lotus-card`. */
   className?: string;
+  /** Render the resting 1px border. Default false (borderless). */
+  bordered?: boolean;
   /**
    * Layout preset. `'auto'` (content width, default), `'full'` (stretch to the
    * container) or `'compact'` (tighter padding). Rendered as

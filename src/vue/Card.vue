@@ -13,6 +13,7 @@
     :aria-label="ariaLabel"
     @click="$emit('click', $event)"
     @keydown="onKeydown"
+
   >
     <div v-if="$slots.media || mediaSrc" class="lotus-card-media" :style="mediaStyle">
       <slot name="media">
@@ -135,6 +136,8 @@ const props = withDefaults(
     role?: string;
     ariaLabel?: string;
     className?: string;
+    /** Render the resting 1px border. Default false (borderless). */
+    bordered?: boolean;
     /** Layout preset. Default 'auto'. */
     size?: CardSize;
     /** Stretch to the height of the grid row. */
@@ -165,6 +168,7 @@ const props = withDefaults(
     role: undefined,
     ariaLabel: undefined,
     className: '',
+    bordered: false,
     size: 'auto',
     fill: false,
     href: undefined,
@@ -208,6 +212,7 @@ const rootClasses = computed(() =>  [
     'lotus-card',
     props.size !== 'auto' ? `lotus-card--${props.size}` : '',
     props.fill ? 'lotus-card--fill' : '',
+    props.bordered ? 'lotus-bordered' : '',
     props.className,
   ]
     .filter(Boolean)

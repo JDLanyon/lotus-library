@@ -45,6 +45,8 @@
   text-decoration: none;
   color: var(--lotus-primary);
   background: transparent;
+  /* Borderless by default. A resting border is opt-in via `bordered` /
+     `.lotus-bordered`; hover still shows a lift + fill. */
   border: 1px solid transparent;
   transition:
     transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -57,6 +59,15 @@
   transform: translateY(-4px);
   background: var(--lotus-primary);
   color: var(--lotus-background);
+  border-color: var(--lotus-primary);
+}
+
+/* Opt-in resting border, shared by Panel / Button / Card. */
+.lotus-panel.lotus-bordered {
+  border-color: var(--lotus-border-color);
+}
+
+.lotus-panel.lotus-bordered:hover {
   border-color: var(--lotus-primary);
 }
 
@@ -244,7 +255,8 @@
   font-size: 0.9rem;
   line-height: 1.2;
   background: transparent;
-  border: 1px solid var(--lotus-primary);
+  /* Borderless by default; opt in with `bordered` / `.lotus-bordered`. */
+  border: 1px solid transparent;
   border-radius: var(--lotus-radius);
   color: var(--lotus-primary);
   text-decoration: none;
@@ -269,7 +281,13 @@
   border-color: var(--lotus-primary);
 }
 
-/* Borderless variant: no border in any state, keeps fill/glitch behaviour. */
+/* Opt-in resting border (shared class across Panel / Button / Card). */
+.lotus-btn.lotus-bordered {
+  border-color: var(--lotus-primary);
+}
+
+/* Borderless variant: no border in any state, keeps fill/glitch behaviour.
+   Now the default, kept for backwards compatibility. */
 .lotus-btn--borderless,
 .lotus-btn.lotus-btn--borderless {
   border-color: transparent;
@@ -427,13 +445,19 @@
 .lotus-card {
   position: relative;
   padding: 1.25rem;
-  border: 1px solid var(--lotus-border-color);
+  /* Borderless by default; opt in with `bordered` / `.lotus-bordered`. */
+  border: 1px solid transparent;
   border-radius: var(--lotus-radius);
   color: var(--lotus-primary);
   cursor: pointer;
   transition:
     transform 0.15s ease,
-    background 0.15s ease;
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.lotus-card.lotus-bordered {
+  border-color: var(--lotus-border-color);
 }
 
 .lotus-card:hover {

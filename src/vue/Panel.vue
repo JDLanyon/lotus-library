@@ -6,7 +6,7 @@
   <component
     :is="linkComponent"
     :href="target"
-    class="lotus-panel"
+    :class="['lotus-panel', bordered ? 'lotus-bordered' : '', className]"
     :aria-label="label"
   >
     <img
@@ -37,6 +37,9 @@ const props = defineProps({
   tags: { type: Array as () => string[], default: undefined },
   basePath: { type: String, default: '' },
   linkComponent: { type: String, default: 'a' },
+  className: { type: String, default: '' },
+  /** Render the resting 1px border. Default false (borderless). */
+  bordered: { type: Boolean, default: false },
   thumbnailDefaultsId: { type: Boolean, default: false },
   defaultThumbnail: { type: String, default: 'thumbnail.png' },
 })

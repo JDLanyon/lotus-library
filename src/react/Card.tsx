@@ -33,6 +33,7 @@ export function Card({
   role,
   ariaLabel,
   className = '',
+  bordered = false,
   size = 'auto',
   fill = false,
   href,
@@ -78,6 +79,7 @@ export function Card({
     'lotus-card',
     size !== 'auto' ? `lotus-card--${size}` : '',
     fill ? 'lotus-card--fill' : '',
+    bordered ? 'lotus-bordered' : '',
     className,
   ]
     .filter(Boolean)
