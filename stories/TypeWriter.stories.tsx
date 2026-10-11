@@ -26,3 +26,21 @@ export const Default: Story = {
 export const Fast: Story = {
   args: { headings: ['Fast', 'Faster', 'Fastest'], speed: 480, delayBetweenHeadings: 1500 },
 };
+
+/**
+ * Long headings must WRAP to multiple lines, with the caret following the last
+ * typed character onto whichever line it lands on.
+ */
+export const MultiLine: Story = {
+  render: (args) => (
+    <h1 style={{ maxWidth: '28rem', textAlign: 'center', margin: '0 auto' }}>
+      <TypeWriter {...args} />
+    </h1>
+  ),
+  args: {
+    headings: [
+      'I build robust, accessible web experiences',
+      'I design and ship full-stack applications',
+    ],
+  },
+};
