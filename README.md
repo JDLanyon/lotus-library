@@ -1,5 +1,20 @@
 # @jdlanyon/lotus-library
 
+[![CI](https://github.com/JDLanyon/lotus-library/actions/workflows/ci.yml/badge.svg)](https://github.com/JDLanyon/lotus-library/actions/workflows/ci.yml)
+[![Storybook](https://img.shields.io/badge/Storybook-live-e8892a)](https://jdlanyon.dev/lotus-library/)
+![React](https://img.shields.io/badge/React-%E2%9C%93-61dafb)
+![Vue 3](https://img.shields.io/badge/Vue%203-%E2%9C%93-42b883)
+
+> ### ▶ [Open the live component showcase →](https://jdlanyon.dev/lotus-library/)
+> Every component, prop and variant, rendered and interactive — no clone
+> required.
+
+<p align="center">
+  <a href="https://jdlanyon.dev/lotus-library/">
+    <img src="docs/assets/hero.svg" alt="lotus-library — Card, Panel, Button, Tags, Glitch and Modal components for React and Vue 3" width="900">
+  </a>
+</p>
+
 Reusable **Card**, **Panel**, **Button**, **Tags**, **Glitch** and **Modal**
 components for reproducible custom websites. Ships **React** and **Vue 3**
 bindings from a single package with matching props, class names and behaviour.
@@ -7,11 +22,7 @@ bindings from a single package with matching props, class names and behaviour.
 - **React** — used by `sausytime.com` (Next.js)
 - **Vue 3** — used by `jdlanyon.dev` (VitePress) and other Vite sites
 - Zero runtime dependencies beyond a React/Vue peer.
-
-> **📖 Component showcase:** browse every component live in
-> **[Storybook](https://jdlanyon.dev/lotus-library/)** — props, variants
-> and docs, no clone required. (Built from `main` and served from the
-> jdlanyon.dev site at `/lotus-library/`.)
+- Monochromatic by default; colour is reserved for the glitch effects.
 
 > **New here, or an LLM?** Read [Component model](#component-model-when-to-use-what)
 > and [Layout is the host's job](#layout-is-the-hosts-job) first — they define
@@ -443,7 +454,48 @@ dynamic backgrounds/images. Disable the glitch with `glitchOnHover={false}`
 ## Local development
 
 ```bash
-npm run storybook        # component playground (React)
-npm run build-storybook  # static Storybook
+npm install
+npm run typecheck        # tsc (React) + vue-tsc (Vue)
+npm run lint
+npm test                 # vitest (unit + type)
 npm run build:lib        # build dist/react, dist/vue, dist/lotus.css
+npm run storybook        # component playground (React)
+npm run build-storybook  # static Storybook → storybook-static/
 ```
+
+## Hosting the showcase (Storybook)
+
+The static Storybook is **deployed to GitHub Pages** by CI
+(`.github/workflows/ci.yml`, `storybook` job) on every push to `main`, built with
+`STORYBOOK_BASE_PATH=/lotus-library` so asset URLs resolve under a subpath. The
+deployed output is served at a subpath and can be fronted by a custom domain
+(e.g. `https://jdlanyon.dev/lotus-library/`) via DNS + a proxy such as
+Cloudflare.
+
+Requirements (one-time):
+
+- The repository is **public** (GitHub Pages is unavailable for private repos on
+  plans without Pages), and
+- **Settings → Pages → Source = "GitHub Actions"**.
+
+Until Pages is enabled the job is simply skipped/unavailable; the local
+`npm run build-storybook` still produces the same output for manual hosting.
+
+## Releasing (manual)
+
+Releases are **performed by a maintainer, not CI** — there is no automated
+release job, and no bot commits or tags are ever pushed. From an up-to-date,
+green `main`:
+
+```bash
+git checkout main && git pull            # be on green main
+npm version patch                        # or minor / major -> commits + tags as you
+npm run build:lib                        # build the artefact you are about to publish
+npm publish --registry https://npm.pkg.github.com/ --access restricted
+git push --follow-tags                   # push the version commit + tag
+```
+
+`npm version` writes the `package.json` bump and creates the tag **under your own
+git identity**, so the tag reads as you. Publishing goes to **GitHub Packages**
+(`npm.pkg.github.com`); the published version stays **restricted** and consumers
+install it with a `read:packages` token (see [Install](#install)).

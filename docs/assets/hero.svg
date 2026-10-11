@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220" role="img" aria-label="lotus-library — Card, Panel, Button, Tags, Glitch and Modal components for React and Vue 3">
+  <title>@jdlanyon/lotus-library</title>
+
+  <!--
+    Self-contained, monochrome-plus-glitch hero. Loaded from a README as <img>,
+    so it cannot inherit colour: a mid-grey (#8a8a8a) reads on both GitHub's
+    light (white) and dark (#0d1117) themes. Colour is reserved for the glitch
+    streaks, matching the library's monochrome-with-glitch identity.
+  -->
+  <defs>
+    <linearGradient id="glitch" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6ea8fe" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#c084fc" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#f87171" stop-opacity="0.9"/>
+    </linearGradient>
+    <clipPath id="clip"><rect x="24" y="24" width="852" height="172" rx="14"/></clipPath>
+  </defs>
+
+  <rect x="24" y="24" width="852" height="172" rx="14" fill="none" stroke="#8a8a8a" stroke-opacity="0.4"/>
+
+  <g clip-path="url(#clip)">
+    <g opacity="0.6">
+      <rect x="40"  y="58"  width="150" height="4" fill="url(#glitch)"/>
+      <rect x="720" y="70"  width="110" height="4" fill="url(#glitch)"/>
+      <rect x="60"  y="152" width="90"  height="4" fill="url(#glitch)"/>
+      <rect x="700" y="142" width="140" height="4" fill="url(#glitch)"/>
+    </g>
+
+    <text x="60" y="112" font-family="ui-monospace, 'DejaVu Sans Mono', monospace"
+          font-size="52" font-weight="700" fill="#6ea8fe" opacity="0.5" letter-spacing="1">lotus-library</text>
+    <text x="58" y="110" font-family="ui-monospace, 'DejaVu Sans Mono', monospace"
+          font-size="52" font-weight="700" fill="#f87171" opacity="0.4" letter-spacing="1">lotus-library</text>
+    <text x="59" y="109" font-family="ui-monospace, 'DejaVu Sans Mono', monospace"
+          font-size="52" font-weight="700" fill="#8a8a8a" letter-spacing="1">lotus-library</text>
+
+    <text x="60" y="146" font-family="ui-sans-serif, system-ui, sans-serif"
+          font-size="18" fill="#8a8a8a">
+      Card · Panel · Button · Tags · Glitch · Modal
+    </text>
+    <text x="60" y="172" font-family="ui-sans-serif, system-ui, sans-serif"
+          font-size="15" fill="#8a8a8a" opacity="0.85">
+      One component set, matching props &amp; class names — React and Vue 3.
+    </text>
+
+    <g stroke="#8a8a8a" stroke-opacity="0.3">
+      <line x1="620" y1="40" x2="620" y2="180"/>
+      <line x1="680" y1="40" x2="680" y2="180"/>
+      <line x1="740" y1="40" x2="740" y2="180"/>
+      <line x1="800" y1="40" x2="800" y2="180"/>
+    </g>
+  </g>
+</svg>
