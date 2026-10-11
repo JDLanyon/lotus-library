@@ -8,6 +8,11 @@ bindings from a single package with matching props, class names and behaviour.
 - **Vue 3** — used by `jdlanyon.dev` (VitePress) and other Vite sites
 - Zero runtime dependencies beyond a React/Vue peer.
 
+> **📖 Component showcase:** browse every component live in
+> **[Storybook](https://jdlanyon.dev/lotus-library/)** — props, variants
+> and docs, no clone required. (Built from `main` and served from the
+> jdlanyon.dev site at `/lotus-library/`.)
+
 > **New here, or an LLM?** Read [Component model](#component-model-when-to-use-what)
 > and [Layout is the host's job](#layout-is-the-hosts-job) first — they define
 > the library's boundaries and are the most common source of misuse.

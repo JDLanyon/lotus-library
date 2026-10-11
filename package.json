@@ -72,8 +72,8 @@
   },
   "peerDependencies": {
     "@icons-pack/react-simple-icons": ">=10",
-    "lucide-react": ">=0.400 <1",
-    "lucide-vue-next": ">=0.400 <1",
+    "lucide-react": ">=0.400 <2",
+    "lucide-vue-next": ">=0.400 <2",
     "next": ">=14",
     "react": ">=18",
     "react-dom": ">=18",
