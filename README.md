@@ -428,11 +428,17 @@ fallback stack explicitly:
 
 ### Buttons
 
-`Button` is border-only (border = `--lotus-primary`, transparent background,
-`--lotus-primary` text). On hover it fades to a `--primary` fill using a
-`color-burn` background blend, text switches to `--lotus-background`, and the
-label plays the **global glitch effect**. Disable the glitch with
-`glitchOnHover={false}` (React) / `:glitch-cooldown` (Vue).
+`Button` is **borderless by default** (`--lotus-primary` text, transparent
+background); opt into a resting border with `bordered`. On hover it fills with
+a **flat** `--lotus-primary` (no blend, so the colour is deterministic
+regardless of what's behind it) and the text switches to `--lotus-background`;
+the label plays the **global glitch effect**. The hover-lift keeps a transparent
+hit-area so the button never slips out from under the cursor.
+
+Set `invertOnHover` to invert instead: on hover the fill becomes
+`--lotus-background` and the text `--lotus-primary` — use this for buttons over
+dynamic backgrounds/images. Disable the glitch with `glitchOnHover={false}`
+(React) / `:glitch-cooldown` (Vue).
 
 ## Local development
 
