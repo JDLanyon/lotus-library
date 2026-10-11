@@ -1,62 +1,116 @@
 <!-- lotus-library — Glitch.vue
-  Global glitch effect with chromatic aberration, shake, displacement, motion
-  blur, scanlines and flicker. Mirrors the React <Glitch>. Constants and timing
-  are shared via core so both builds look identical.
+  Global glitch effect: chromatic aberration, shake, position displacement,
+  motion blur, noise, scanlines and flicker.
 
-  When `names` is provided, cycles through them (with optional permanent switch);
-  otherwise renders the default slot.
+  This is a structural mirror of the React <Glitch> (src/react/glitch/Glitch.tsx):
+  the same DOM nesting and the same per-layer inline styles. Every overlay layer
+  is inlined (position:absolute; inset:0; pointer-events:none) exactly like React,
+  so the effect renders identically in both frameworks and does not depend on
+  external stylesheet class names.
+
+  When `names` is provided, cycles through them; otherwise renders the slot.
 -->
 <template>
-  <span>
-    <!-- Hidden measuring element -->
-    <span ref="measureRef" aria-hidden="true" style="position: absolute; opacity: 0; pointer-events: none">
-      {{ names?.[0] }}
-    </span>
+  <span style="display: inline-block">
+    <!-- Hidden measuring element (width preservation across names) -->
+    <span
+      ref="measureRef"
+      aria-hidden="true"
+      style="position: absolute; opacity: 0; pointer-events: none"
+    >{{ names?.[0] }}</span>
 
     <!-- Position displacement wrapper -->
     <span ref="displaceRef" style="display: inline-block; will-change: transform">
       <span
-        :class="['lotus-glitch-root', props.className]"
+        :class="['lotus-glitch', props.className]"
         :style="{
-          ...mainStyle,
+          display: 'inline-block',
+          ...(preserveSpace && maxNameWidth !== null ? { minWidth: `${maxNameWidth}px` } : {}),
+          position: 'relative',
           filter: isInverted ? 'invert(1)' : 'none',
           transition: isInverted ? 'filter 0.02s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
           willChange: 'transform, filter, opacity',
         }"
       >
         <!-- Shake layer -->
-        <span ref="shakeRef" style="display: inline-block">
-          <span class="lotus-glitch-base">
-            <slot>{{ mainContent }}</slot>
-          </span>
+        <span ref="shakeRef">
+          <span style="position: relative; z-index: 10"><slot>{{ mainContent }}</slot></span>
         </span>
 
         <!-- Chromatic aberration layers -->
         <span
           v-for="(layer, i) in chromaLayers"
           :key="i"
-          :class="['lotus-glitch-chroma-layer', layer.blendClass]"
-          :style="layer.style"
           aria-hidden="true"
-          role="presentation"
-        >
-          <slot>{{ chromaContent }}</slot>
-        </span>
+          :style="layer.style"
+        ><slot>{{ chromaContent }}</slot></span>
 
         <!-- Motion blur -->
         <span
           v-if="intensity > 0"
-          class="lotus-glitch-motion-blur"
-          :style="{ zIndex: 4, backdropFilter: `blur(${1.5 * intensity}px)`, opacity: intensity }"
           aria-hidden="true"
+          :style="{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 4,
+            pointerEvents: 'none',
+            backdropFilter: `blur(${1.5 * intensity}px)`,
+            opacity: intensity,
+          }"
+        />
+
+        <!-- Noise -->
+        <span
+          v-if="intensity > 0"
+          aria-hidden="true"
+          :style="{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 5,
+            pointerEvents: 'none',
+            opacity: intensity * 0.15,
+            backgroundImage:
+              'radial-gradient(circle at 30% 40%, rgba(255,255,255,0.1) 0%, transparent 40%),' +
+              'radial-gradient(circle at 70% 60%, rgba(0,0,0,0.1) 0%, transparent 40%),' +
+              'repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.02) 4px, rgba(255,255,255,0.02) 8px)',
+            backgroundSize: '100% 100%, 100% 100%, 8px 8px',
+            mixBlendMode: 'overlay',
+          }"
+        />
+
+        <!-- Scanlines -->
+        <span
+          v-if="intensity > 0.7"
+          aria-hidden="true"
+          class="lotus-animate-glitch-noise"
+          :style="{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 25,
+            pointerEvents: 'none',
+            background:
+              'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)',
+            mixBlendMode: 'overlay',
+            opacity: intensity * 0.3,
+            animation: `glitch-noise ${glitchDuration}ms ease-in-out`,
+            '--noise-intensity': intensity,
+          }"
         />
 
         <!-- Flicker -->
         <span
           v-if="phase === 'active' && showFlicker"
-          class="lotus-glitch-flicker"
-          :style="{ zIndex: 30, opacity: 0.1, animation: 'glitch-noise 0.05s linear', mixBlendMode: 'overlay' }"
           aria-hidden="true"
+          :style="{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 30,
+            pointerEvents: 'none',
+            background: '#fff',
+            opacity: 0.1,
+            animation: 'glitch-noise 0.05s linear',
+            mixBlendMode: 'overlay',
+          }"
         />
       </span>
     </span>
@@ -65,11 +119,8 @@
 
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch, useTemplateRef } from 'vue';
-import {
-  GLITCH_CHROMA_COLORS,
-  GLITCH_FLICKER_PROBABILITY,
-  GLITCH_SHAKE_STEPS,
-} from '../../core/glitch';
+import type { CSSProperties } from 'vue';
+import { GLITCH_CHROMA_COLORS, GLITCH_FLICKER_PROBABILITY } from '../../core/glitch';
 import { useGlitchState } from './useGlitchState';
 import { useNameCycler } from './useNameCycler';
 
@@ -183,13 +234,12 @@ watch([phase, intensity], () => {
     if (!shakeRef.value) return;
     if (shakeStart === null) shakeStart = time;
     const progress = Math.min((time - shakeStart) / glitchDuration, 1);
-    const stepIndex = Math.floor(progress * GLITCH_SHAKE_STEPS.length);
     const x = (Math.random() > 0.5 ? -1 : 1) * MAX_SHAKE_OFFSET * intensity.value;
     const y = (Math.random() > 0.5 ? -1 : 1) * MAX_SHAKE_OFFSET * intensity.value;
     shakeRef.value.style.transform = `translate(${x}px, ${y}px)`;
     if (progress < 1) shakeFrame = requestAnimationFrame(animate);
     else {
-      shakeRef.value.style.transform = '';
+      shakeRef.value.style.transform = 'translate(0, 0)';
       shakeStart = null;
     }
   };
@@ -240,7 +290,9 @@ watch(phase, (p) => {
 });
 
 // ---- Chroma layers --------------------------------------------------------
-const chromaLayers = computed(() => {
+// Mirrors React ChromaticAberrationEffect: absolute inset:0, blend mode,
+// per-layer colour, transform and clip-path — all inlined.
+const chromaLayers = computed<{ style: CSSProperties }[]>(() => {
   if (intensity.value === 0) return [];
   return GLITCH_CHROMA_COLORS.map((color, i) => {
     const xJitter = (Math.random() - 0.5) * 4;
@@ -257,14 +309,17 @@ const chromaLayers = computed(() => {
     const translateY = (color.y * intensity.value + yJitter + displaceY) * (i % 3 ? -1 : 1);
 
     return {
-      blendClass: color.blend === 'difference' ? 'mix-blend-difference' : 'mix-blend-screen',
       style: {
+        position: 'absolute',
+        inset: 0,
         zIndex: 2,
+        pointerEvents: 'none',
+        mixBlendMode: color.blend === 'difference' ? 'difference' : 'screen',
         color: color.value,
         opacity: intensity.value,
         transform: `translate(${translateX}px, ${translateY}px)`,
         filter: `blur(0.5px) drop-shadow(0 0 ${glowSize}px ${color.value})`,
-        clipPath: displacement.value > 0 ? `inset(${clipX}% ${clipY}% 0 0)` : 'none',
+        clipPath: displacement.value > 0 ? `inset(${clipX}% ${clipY}% 0 0)` : undefined,
         transition: `transform ${glitchDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
         willChange: 'transform',
       },
@@ -277,12 +332,13 @@ onUnmounted(() => {
   stopDisplacement();
 });
 
+// ---- Content --------------------------------------------------------------
 const mainContent = computed(() =>
   nameCycler
     ? nameCycler.showAlt.value
       ? nameCycler.altName()
       : nameCycler.currentName()
-    : null,
+    : undefined,
 );
 
 const chromaContent = computed(() => {
@@ -294,12 +350,4 @@ const chromaContent = computed(() => {
   }
   return mainContent.value;
 });
-
-const mainStyle = computed(() => ({
-  display: 'inline-block',
-  minWidth:
-    props.preserveSpace && maxNameWidth.value !== null
-      ? `${maxNameWidth.value}px`
-      : undefined,
-}));
 </script>
