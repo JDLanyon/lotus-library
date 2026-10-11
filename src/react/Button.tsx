@@ -32,8 +32,9 @@ export interface ButtonProps {
   /** Vertical padding preset. Default 'md' (the baseline in components.css). */
   paddingY?: 'none' | 'sm' | 'md' | 'lg';
   /**
-   * On hover, fill with the host background instead of --primary so any
-   * dynamic background behind the button shows through. Default false.
+   * On hover, invert: fill with the host background and use --primary text,
+   * so the button reads against a dynamic/background image. Default false
+   * (the default hover fills flat --primary with --background text).
    */
   invertOnHover?: boolean;
   onClick?: React.MouseEventHandler;

@@ -243,6 +243,7 @@
  * Button
  * ------------------------------------------------------------------ */
 .lotus-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -270,13 +271,23 @@
     border-color 0.2s ease;
 }
 
+/* Transparent hit-area padding so the hover-lift never moves the button out
+   from under the cursor (that self-displacement caused a hover flicker at the
+   bottom edge). The visual lifts; the hit area stays put. */
+.lotus-btn::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  z-index: -1;
+}
+
 .lotus-btn:hover:not(:disabled),
 .lotus-btn:focus-visible {
   transform: translateY(-2px);
+  /* Flat, deterministic hover fill — the theme token, independent of the page
+     behind the button. (A blend mode here made identical buttons render
+     different colours depending on the backdrop.) */
   background-color: var(--lotus-primary);
-  /* color-burn the fill so it reads as a deep tint rather than flat paint */
-  background-image: linear-gradient(var(--lotus-primary), var(--lotus-primary));
-  background-blend-mode: color-burn;
   color: var(--lotus-background);
   border-color: var(--lotus-primary);
 }
@@ -614,9 +625,12 @@
 /* ------------------------------------------------------------------ *
  * TypeWriter
  * ------------------------------------------------------------------ */
+/* Inline text flow (NOT inline-flex): the heading must wrap across lines and
+   the caret must sit inline after the last typed character, following the
+   text onto whichever line it ends on. Flex would keep everything on one row
+   and mis-place the caret on multi-line headings. */
 .lotus-typewriter {
-  display: inline-flex;
-  align-items: center;
+  display: inline;
 }
 
 .lotus-typewriter-caret {
@@ -624,6 +638,7 @@
   width: 2px;
   height: 1.2em;
   margin-left: 1px;
+  vertical-align: text-bottom;
   background: var(--lotus-secondary);
   transition: opacity 0.3s ease;
 }
