@@ -13,6 +13,8 @@ export interface GlitchImageProps {
   intensity?: number;
   className?: string;
   children?: React.ReactNode;
+  /** Scanline overlay (deprecated, off by default). See <Glitch>. */
+  scanlines?: boolean;
 }
 
 /**
@@ -20,7 +22,7 @@ export interface GlitchImageProps {
  * common case, or use the children slot for custom markup (e.g. Next <Image>).
  */
 export const GlitchImage = React.forwardRef<GlitchHandle, GlitchImageProps>(function GlitchImage(
-  { src, alt = '', duration, delay, variance, intensity, className = '', children },
+  { src, alt = '', duration, delay, variance, intensity, className = '', children, scanlines },
   ref,
 ) {
   return (
@@ -32,6 +34,7 @@ export const GlitchImage = React.forwardRef<GlitchHandle, GlitchImageProps>(func
       glitchIntensity={intensity}
       preserveSpace={false}
       className={className}
+      scanlines={scanlines}
     >
       {children ?? (src ? <img src={src} alt={alt} /> : null)}
     </Glitch>

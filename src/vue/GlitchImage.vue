@@ -11,6 +11,7 @@
     :glitch-intensity="intensity"
     :preserve-space="false"
     :class-name="className"
+    :scanlines="scanlines"
     @glitch-complete="emit('glitchComplete')"
   >
     <slot>
@@ -33,6 +34,8 @@ withDefaults(
     variance?: number;
     intensity?: number;
     className?: string;
+    /** Scanline overlay (deprecated, off by default). See Glitch. */
+    scanlines?: boolean;
   }>(),
   {
     src: undefined,
@@ -42,6 +45,7 @@ withDefaults(
     variance: undefined,
     intensity: undefined,
     className: '',
+    scanlines: false,
   },
 );
 

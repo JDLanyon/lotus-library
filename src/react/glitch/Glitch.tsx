@@ -31,6 +31,14 @@ export interface GlitchProps {
   onGlitchComplete?: () => void;
   /** Auto-trigger glitches on a timer. Set false for manual (e.g. hover-only). */
   autoGlitch?: boolean;
+  /**
+   * Render the scanline overlay. Deprecated and **off by default**: as a
+   * full-box `mix-blend-mode: overlay` layer it paints a hard-edged square
+   * over transparent art (logos/SVG) instead of conforming to the glyph, and
+   * masking it to the silhouette is too costly alongside the other layers.
+   * Opt in for text-only cases at your own discretion.
+   */
+  scanlines?: boolean;
 }
 
 export const Glitch = function Glitch({
@@ -47,6 +55,7 @@ export const Glitch = function Glitch({
   preserveSpace = true,
   onGlitchComplete,
   autoGlitch = true,
+  scanlines = false,
 }: GlitchProps) {
   const isNameMode = !!names && names.length > 0;
   const nameCycler = useNameCycler(names ?? [], nameSwitchProbability);
@@ -169,7 +178,7 @@ export const Glitch = function Glitch({
 
           <MotionBlurEffect intensity={intensity * 2} />
           <NoiseEffect intensity={intensity} duration={glitchDuration} />
-          <ScanlineEffect intensity={intensity} duration={glitchDuration} />
+          {scanlines && <ScanlineEffect intensity={intensity} duration={glitchDuration} />}
           <FlickerEffect phase={phase} shouldFlicker={shouldFlicker} />
         </span>
       </PositionDisplacementEffect>

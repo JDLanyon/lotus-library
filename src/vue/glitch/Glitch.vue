@@ -1,6 +1,6 @@
 <!-- lotus-library — Glitch.vue
   Global glitch effect: chromatic aberration, shake, position displacement,
-  motion blur, noise, scanlines and flicker.
+  motion blur, noise and flicker (scanlines are deprecated, off by default).
 
   This is a structural mirror of the React <Glitch> (src/react/glitch/Glitch.tsx):
   the same DOM nesting and the same per-layer inline styles. Every overlay layer
@@ -78,9 +78,9 @@
           }"
         />
 
-        <!-- Scanlines -->
+        <!-- Scanlines (deprecated, off by default) -->
         <span
-          v-if="intensity > 0.7"
+          v-if="scanlines && intensity > 0.7"
           aria-hidden="true"
           class="lotus-animate-glitch-noise"
           :style="{
@@ -135,6 +135,12 @@ const props = withDefaults(
     className?: string;
     nameSwitchProbability?: number;
     preserveSpace?: boolean;
+    /**
+     * Render the scanline overlay. Deprecated and **off by default**: as a
+     * full-box `mix-blend-mode: overlay` layer it paints a hard-edged square
+     * over transparent art (logos/SVG) instead of conforming to the glyph.
+     */
+    scanlines?: boolean;
   }>(),
   {
     names: undefined,
@@ -146,6 +152,7 @@ const props = withDefaults(
     className: '',
     nameSwitchProbability: 0.1,
     preserveSpace: true,
+    scanlines: false,
   },
 );
 

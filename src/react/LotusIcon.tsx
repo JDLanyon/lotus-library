@@ -18,8 +18,8 @@ export interface LotusIconProps {
 /**
  * The lotus mark. Renders an <img> through the adapter (so a Next host gets
  * `next/image`) rather than inlining SVG paths — the artwork lives in a real
- * `.svg` asset the consumer ships. A CSS glitch/scanline filter is layered on
- * top via `.lotus-icon` (core components.css).
+ * `.svg` asset the consumer ships. Styling lives in `.lotus-icon` (core
+ * components.css).
  */
 export function LotusIcon({
   src = '/lotus.svg',

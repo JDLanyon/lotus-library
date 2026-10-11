@@ -15,13 +15,15 @@ export interface GlitchTextProps {
   intensity?: number;
   className?: string;
   children?: React.ReactNode;
+  /** Scanline overlay (deprecated, off by default). See <Glitch>. */
+  scanlines?: boolean;
 }
 
 /**
  * Convenience wrapper around <Glitch> for rendering glitching text.
  */
 export const GlitchText = React.forwardRef<GlitchHandle, GlitchTextProps>(function GlitchText(
-  { text, names, duration, delay, variance, intensity, className = '', children },
+  { text, names, duration, delay, variance, intensity, className = '', children, scanlines },
   ref,
 ) {
   const content = children ?? text;
@@ -36,6 +38,7 @@ export const GlitchText = React.forwardRef<GlitchHandle, GlitchTextProps>(functi
       variance={variance}
       glitchIntensity={intensity}
       className={className}
+      scanlines={scanlines}
     >
       {content}
     </Glitch>

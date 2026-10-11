@@ -10,9 +10,9 @@ const meta: Meta<typeof Glitch> = {
       description: {
         component:
           'The base glitch effect (chromatic aberration, shake, displacement, ' +
-          'motion blur, noise, scanlines, flicker). GlitchText/GlitchImage/' +
-          'GlitchLink build on this. The React and Vue versions share one DOM ' +
-          'structure and per-layer styles.',
+          'motion blur, noise, flicker). GlitchText/GlitchImage/' +
+          'GlitchLink build on this. Scanlines are deprecated and off by ' +
+          'default (set `scanlines` to opt in).',
       },
     },
   },
@@ -34,3 +34,9 @@ export const NameCycler: Story = {
     glitchIntensity: 1,
   },
 };
+
+/** Deprecated opt-in: scanline overlay (paints a box on transparent art). */
+export const WithScanlines: Story = {
+  args: { children: 'Scanlines on', glitchIntensity: 1.2, scanlines: true, duration: 300, delay: 2500 },
+};
+

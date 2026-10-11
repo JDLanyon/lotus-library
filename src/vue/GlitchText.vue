@@ -11,6 +11,7 @@
     :variance="variance"
     :glitch-intensity="intensity"
     :class-name="className"
+    :scanlines="scanlines"
     @glitch-complete="emit('glitchComplete')"
   >
     <slot>{{ text }}</slot>
@@ -32,6 +33,8 @@ const props = withDefaults(
     variance?: number;
     intensity?: number;
     className?: string;
+    /** Scanline overlay (deprecated, off by default). See Glitch. */
+    scanlines?: boolean;
   }>(),
   {
     text: '',
@@ -41,6 +44,7 @@ const props = withDefaults(
     variance: undefined,
     intensity: undefined,
     className: '',
+    scanlines: false,
   },
 );
 
