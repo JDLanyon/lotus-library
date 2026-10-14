@@ -1,0 +1,20 @@
+# Configuration for GitHub's automatically generated release notes.
+# Groups merged PRs / commits into sections by label or conventional-commit
+# prefix. Trigger generation with "Draft a new release" -> "Generate release
+# notes", or via `gh release create --generate-notes`.
+changelog:
+  categories:
+    - title: Features
+      labels: [feature, feat, enhancement]
+    - title: Bug Fixes
+      labels: [fix, bug, bugfix]
+    - title: Performance
+      labels: [perf, performance]
+    - title: Refactors
+      labels: [refactor]
+    - title: Documentation
+      labels: [docs, documentation]
+    - title: Build & CI
+      labels: [build, ci, chore]
+    - title: Other Changes
+      labels: ['*']
