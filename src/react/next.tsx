@@ -7,8 +7,11 @@ import {
   usePathname as useNextPathname,
   useRouter as useNextRouter,
 } from 'next/navigation';
-import { LotusAdapterProvider } from './adapter';
-import { LotusThemeProvider, type ThemeController } from './theme';
+import {
+  LotusAdapterProvider,
+  LotusThemeProvider,
+} from '@jdlanyon/lotus-library/react';
+import type { ThemeController } from './theme';
 import type {
   ImageProps,
   LinkProps,
@@ -26,9 +29,10 @@ import type {
  * as the renderers every Lotus component uses under the hood.
  *
  * `themeController` (optional) forwards a host-owned theme state (e.g.
- * `next-themes`) into the library's theme context, so <Footer>'s ThemeSwitch
- * reflects and updates the real theme without a separate <LotusThemeProvider>.
- * Pass `{ theme, setTheme }` from `useTheme()` (next-themes):
+ * `next-themes`) into the library's theme context, so the library's
+ * <ThemeSwitch> reflects and updates the real theme without a separate
+ * <LotusThemeProvider>. Pass `{ theme, setTheme }` from `useTheme()`
+ * (next-themes):
  *
  *   <LotusNextProvider themeController={{ theme, setTheme }}>
  *
@@ -96,3 +100,4 @@ export function LotusNextProvider({
     <LotusThemeProvider controller={themeController}>{tree}</LotusThemeProvider>
   );
 }
+

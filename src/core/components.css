@@ -820,16 +820,27 @@
 }
 
 /* ------------------------------------------------------------------ *
- * Footer — social links + theme switch
+ * Footer — site content (children) above a row of social links + an
+ * optional extra slot (e.g. a theme toggle). The row stays centered and
+ * wraps naturally on mobile.
  * ------------------------------------------------------------------ */
 .lotus-footer {
   position: relative;
   z-index: 50;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem auto;
+}
+
+/* The links + extra slot row: centered, wrapping. */
+.lotus-footer-row {
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin: 2rem auto;
+  gap: 1rem;
 }
 
 .lotus-footer.is-landing {

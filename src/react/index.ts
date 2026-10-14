@@ -17,6 +17,7 @@ export { LotusIcon, type LotusIconProps } from './LotusIcon';
 export { Embed, type EmbedProps } from './Embed';
 export { Nav, type NavProps, type NavLinkItem } from './Nav';
 export { Footer, type FooterProps } from './Footer';
+export { ThemeSwitch, type ThemeSwitchProps } from './ThemeSwitch';
 export {
   ProjectRenderer,
   type ProjectRendererProps,

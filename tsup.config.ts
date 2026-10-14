@@ -40,6 +40,13 @@ export default defineConfig([
       'next/navigation',
       'lucide-react',
       '@icons-pack/react-simple-icons',
+      // Share the adapter/theme context with the main entry. react/next must
+      // consume react/index's single copy (via the package self-reference)
+      // instead of inlining its own, or <LotusAdapterProvider>/
+      // <LotusThemeProvider> (next) and useAdapter/useTheme (index) end up with
+      // two distinct React contexts, and the Next providers never reach the
+      // components.
+      '@jdlanyon/lotus-library/react',
     ],
     esbuildOptions(options) {
       options.loader = { ...options.loader, '.css': 'empty' };
@@ -104,4 +111,5 @@ export default defineConfig([
     },
   },
 ]);
+
 

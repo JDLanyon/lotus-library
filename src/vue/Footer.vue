@@ -1,12 +1,19 @@
 <!-- lotus-library — Footer.vue
-  Site footer: a row of social links plus a theme switch. Opinionated by design
-  — it references Jackson by default and can be overridden via `links`.
+  Site footer: an optional site-content slot (default) above a centered,
+  wrapping row of social links plus an optional inline `extra` slot (e.g. a
+  theme toggle). Opinionated by design — it references Jackson by default and
+  can be overridden via `links`.
 
-  NOTE: `vue-simple-icons` (social glyphs) and `lucide-vue-next` (theme glyphs)
-  are OPTIONAL peer dependencies. Only hosts that render <Footer> need them.
+  Slots:
+    default -> rendered ABOVE the links row (site-specific content)
+    extra   -> rendered NEXT TO the links, inside the same row
+  NOTE: `vue-simple-icons` (social glyphs) is an OPTIONAL peer dependency. Only
+  hosts that render <Footer> need it.
 -->
 <template>
   <footer :class="['lotus-footer', { 'is-landing': landingPage }, className]">
+    <slot />
+    <div class="lotus-footer-row">
     <template v-if="glitchLinks">
       <GlitchLink
         v-for="s in links"
@@ -33,25 +40,15 @@
         <p>{{ s.label }}</p>
       </component>
     </template>
-
-    <Tooltip :text="tooltipText">
-      <Button aria-label="Toggle theme" @click="cycleTheme">
-        <component :is="icon" />
-      </Button>
-    </Tooltip>
+      <slot name="extra" />
+    </div>
   </footer>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Circle, Moon, SunMoon } from 'lucide-vue-next';
 import { useAdapter } from './adapter';
-import { useTheme, useMounted } from './theme';
 import { DEFAULT_FOOTER_LINKS, type FooterLink } from './defaults';
-import Button from './Button.vue';
-import Tooltip from './Tooltip.vue';
 import GlitchLink from './GlitchLink.vue';
-
 export type { FooterLink };
 
 withDefaults(
@@ -71,26 +68,5 @@ withDefaults(
 );
 
 const { Link } = useAdapter();
-const { theme, setTheme } = useTheme();
-const mounted = useMounted();
-
-const cycleTheme = () => {
-  if (theme.value === 'light') setTheme('dark');
-  else if (theme.value === 'dark') setTheme('system');
-  else setTheme('light');
-};
-
-const icon = computed(() => {
-  if (!mounted.value) return Circle;
-  if (theme.value === 'light') return Circle;
-  if (theme.value === 'dark') return Moon;
-  return SunMoon;
-});
-
-const tooltipText = computed(() => {
-  if (!mounted.value) return 'Light mode';
-  if (theme.value === 'light') return 'Light mode';
-  if (theme.value === 'dark') return 'Dark mode';
-  return 'System theme';
-});
 </script>
+

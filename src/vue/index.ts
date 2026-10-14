@@ -14,6 +14,7 @@ import LotusIcon from './LotusIcon.vue';
 import Embed from './Embed.vue';
 import Nav from './Nav.vue';
 import Footer from './Footer.vue';
+import ThemeSwitch from './ThemeSwitch.vue';
 import ProjectRenderer from './ProjectRenderer.vue';
 import Glitch from './glitch/Glitch.vue';
 import GlitchText from './GlitchText.vue';
@@ -36,6 +37,7 @@ export {
   Embed,
   Nav,
   Footer,
+  ThemeSwitch,
   ProjectRenderer,
   Glitch,
   GlitchText,
@@ -110,6 +112,7 @@ export const LotusLibrary = {
     app.component('LotusEmbed', Embed);
     app.component('LotusNav', Nav);
     app.component('LotusFooter', Footer);
+    app.component('LotusThemeSwitch', ThemeSwitch);
     app.component('LotusProjectRenderer', ProjectRenderer);
     app.component('LotusGlitch', Glitch);
     app.component('LotusGlitchText', GlitchText);
@@ -128,6 +131,7 @@ export const LotusLibrary = {
     app.component('Embed', Embed);
     app.component('Nav', Nav);
     app.component('Footer', Footer);
+    app.component('ThemeSwitch', ThemeSwitch);
     app.component('ProjectRenderer', ProjectRenderer);
     app.component('Glitch', Glitch);
     app.component('GlitchText', GlitchText);
