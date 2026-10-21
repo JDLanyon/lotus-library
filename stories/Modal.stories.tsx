@@ -53,61 +53,67 @@ export const NoSignature: Story = {
   render: () => <ModalDemo signature={undefined} />,
 };
 
-export const BodyOnly: Story = {
-  render: () => {
-    const [open, setOpen] = React.useState(true);
-    return (
-      <div style={{ padding: '2rem' }}>
-        <Button text="Open bare modal" onClick={() => setOpen(true)} />
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <p style={{ margin: 0 }}>A minimal modal with just a body.</p>
-        </Modal>
-      </div>
+/**
+ * Hooks must live in a component, not in `render`. Storybook calls `render` as
+ * a plain function (not as a component), so `useState` there throws "hooks can
+ * only be called inside decorators and story functions".
+ */
+function BodyOnlyDemo() {
+  const [open, setOpen] = React.useState(true);
+  return (
+    <div style={{ padding: '2rem' }}>
+      <Button text="Open bare modal" onClick={() => setOpen(true)} />
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <p style={{ margin: 0 }}>A minimal modal with just a body.</p>
+      </Modal>
+    </div>
     );
-  },
-};
+}
+
+export const BodyOnly: Story = { render: () => <BodyOnlyDemo /> };
 
 /**
  * ProjectModal fetches `${projectBasePath}/${slug}` (falling back to `.html`),
  * extracts `.project-fullpage-body`, and shows loading/error states. In Storybook
  * the fetch is stubbed so the shell can be previewed without a backend.
  */
-export const Project: Story = {
-  render: () => {
-    const [open, setOpen] = React.useState(true);
+function ProjectDemo() {
+  const [open, setOpen] = React.useState(true);
 
-    React.useEffect(() => {
-      const orig = globalThis.fetch;
-      globalThis.fetch = (async (input: RequestInfo | URL) => {
-        const url = String(input);
-        if (url.includes('/projects/')) {
-          return new Response(
-            `<html><body><div class="project-fullpage-body">
-              <h2>Dead Bread</h2>
-              <p>A browser game about a loaf of bread on a quest.</p>
-              <h3>Tech</h3>
-              <ul><li>TypeScript</li><li>Canvas</li></ul>
-            </div></body></html>`,
-            { status: 200, headers: { 'Content-Type': 'text/html' } },
-          );
-        }
-        return orig(input as RequestInfo);
-      }) as typeof fetch;
-      return () => {
-        globalThis.fetch = orig;
-      };
-    }, []);
-
-    return (
-      <div style={{ padding: '2rem' }}>
-        <Button text="Open project" onClick={() => setOpen(true)} />
-        <ProjectModal
-          open={open}
-          onClose={() => setOpen(false)}
-          slug="dead-bread"
-          repo="https://github.com/example/dead-bread"
-        />
-      </div>
-    );
-  },
+  React.useEffect(() => {
+    const orig = globalThis.fetch;
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.includes('/projects/')) {
+        return new Response(
+          `<html><body><div class="project-fullpage-body">
+            <h2>Dead Bread</h2>
+            <p>A browser game about a loaf of bread on a quest.</p>
+            <h3>Tech</h3>
+            <ul><li>TypeScript</li><li>Canvas</li></ul>
+          </div></body></html>`,
+          { status: 200, headers: { 'Content-Type': 'text/html' } },
+        );
+      }
+      return orig(input as RequestInfo);
+    }) as typeof fetch;
+    return () => {
+      globalThis.fetch = orig;
 };
+  }, []);
+
+  return (
+    <div style={{ padding: '2rem' }}>
+      <Button text="Open project" onClick={() => setOpen(true)} />
+      <ProjectModal
+        open={open}
+        onClose={() => setOpen(false)}
+        slug="dead-bread"
+        repo="https://github.com/example/dead-bread"
+      />
+    </div>
+  );
+}
+
+export const Project: Story = { render: () => <ProjectDemo /> };
+

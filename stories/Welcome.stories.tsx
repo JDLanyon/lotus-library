@@ -1,5 +1,5 @@
+import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { useGlobals } from 'storybook/preview-api';
 import { Button, Footer, Glitch, GlitchLink, TypeWriter } from '../src/react';
 
 /**
@@ -39,17 +39,57 @@ export default meta;
 type Story = StoryObj;
 
 /**
- * The lotus is a near-WHITE glyph, so it must be inverted on a light canvas
- * (the same `filter: invert()` the jdlanyon.dev navbar applies). The theme
- * toolbar drives it, resolving `system` against the OS.
+ * The lotus is a near-WHITE glyph, so it inverts on a light canvas. The theme is
+ * read from the decorator's wrapper rather than Storybook's `useGlobals`.
+ *
+ * Why: Storybook's preview hooks only work during the synchronous call into a
+ * decorated story (`hookify` sets STORYBOOK_HOOKS_CONTEXT, calls the fn, then
+ * restores it). A React component rendered later — as a child of the story's
+ * tree — has no hooks context, so `useGlobals` throws "hooks can only be called
+ * inside decorators and story functions".
+ *
+ * `preview.ts` already puts the selected mode on the wrapper as
+ * `.lotus-sb-canvas[data-theme='light|dark|system']`, and for `system` it
+ * resolves to a `prefers-color-scheme` media query, so this reads the resolved
+ * value instead of duplicating the toolbar logic.
  */
+function useResolvedTheme(): 'light' | 'dark' {
+  const read = (): 'light' | 'dark' => {
+    if (typeof document === 'undefined') return 'dark';
+    const canvas = document.querySelector('.lotus-sb-canvas');
+    const mode = canvas?.getAttribute('data-theme') ?? 'system';
+    if (mode === 'light' || mode === 'dark') return mode;
+    // `system`: the decorator expresses it as a media query, so ask the OS.
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  };
+
+  const [theme, setTheme] = React.useState(read);
+
+  React.useEffect(() => {
+    const sync = () => setTheme(read());
+    sync();
+    // The toolbar rewrites `data-theme` on the wrapper without remounting.
+    const observer = new MutationObserver(sync);
+    observer.observe(document.body, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['data-theme'],
+    });
+    const mq = window.matchMedia?.('(prefers-color-scheme: dark)');
+    mq?.addEventListener?.('change', sync);
+    return () => {
+      observer.disconnect();
+      mq?.removeEventListener?.('change', sync);
+    };
+  }, []);
+
+  return theme;
+}
+
 function Lotus() {
-  const [globals] = useGlobals();
-  const mode = (globals?.theme as string) ?? 'system';
-  const systemDark =
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-  const dark = mode === 'dark' || (mode === 'system' && systemDark);
+  const dark = useResolvedTheme() === 'dark';
 
   return (
     <Glitch duration={3000} delay={16000}>

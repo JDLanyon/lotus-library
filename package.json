@@ -1,6 +1,6 @@
 {
   "name": "@jdlanyon/lotus-library",
-  "version": "0.2.2",
+  "version": "0.2.1",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/",
     "access": "restricted"
@@ -141,6 +141,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JDLanyon/lotus-library.git"
+  }
 }
-}
-
