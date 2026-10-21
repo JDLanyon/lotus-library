@@ -834,13 +834,29 @@
   margin: 2rem auto;
 }
 
-/* The links + extra slot row: centered, wrapping. */
+/* The links row: a single line, never wrapping. If it cannot fit, the media
+   query below switches to a column with the lotus on top instead of letting
+   items pile up unevenly. */
 .lotus-footer-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 1rem;
+}
+
+/* Too narrow for one row: stack vertically and lead with the lotus. */
+@media (max-width: 30rem) {
+  .lotus-footer-row {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  /* The glyph is rendered mid-row in DOM order, so pull it to the front
+     visually (and let its siblings fall in after it). */
+  .lotus-footer-logo {
+    order: -1;
+  }
 }
 
 .lotus-footer.is-landing {
@@ -851,16 +867,81 @@
 }
 
 .lotus-footer-link {
-  display: flex;
+  display: inline-flex;
+  /* Vertical centring of icon vs. label is the whole point of this rule. */
+  align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
   color: var(--lotus-secondary);
   text-decoration: none;
 }
 
-.lotus-footer-link:hover {
+/* The label is a <span> (not a <p>) so it carries no default block margin, and
+   `line-height: 1` keeps the em-box tight enough that its centre matches the
+   icon's. A taller line box adds leading below the baseline, which is what
+   made the text sit off-centre against the glyph. */
+.lotus-footer-label {
+  margin: 0;
+  line-height: 1;
+  font-size: 0.9rem;
+}
+
+/* Keep the icon from being the taller of the two (e.g. a lucide SVG with a
+   different intrinsic box) so the pair centres predictably. */
+.lotus-footer-link > svg {
+  display: block;
+  flex: 0 0 auto;
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.lotus-footer-link:hover .lotus-footer-label {
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+/* Centre lotus: the only element in the footer that glitches. Kept small so it
+   reads as a sign-off rather than a logo lockup. */
+.lotus-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: var(--lotus-radius);
+  color: var(--lotus-secondary);
+  line-height: 0;
+}
+
+/* LotusIcon renders <span.lotus-icon.lotus-footer-logo-img><img></span>, so the
+   filter lives on the span and the box size on the img. */
+.lotus-footer-logo-img {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  /* The lotus artwork is near-WHITE (#eee). On a light canvas that is
+     invisible, so invert it; dark themes leave it as drawn. */
+  filter: invert(1);
+  opacity: 0.75;
+  transition: filter 120ms ease, opacity 120ms ease;
+}
+
+[data-theme='dark'] .lotus-footer-logo-img,
+.lotus-dark .lotus-footer-logo-img,
+.dark .lotus-footer-logo-img {
+  filter: none;
+}
+
+/* Hover restores full opacity and lifts the glyph to --lotus-primary, so it
+   responds visibly in both polarities. */
+.lotus-footer-logo:hover .lotus-footer-logo-img,
+.lotus-footer-logo:focus-visible .lotus-footer-logo-img {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lotus-primary) 45%, transparent));
+}
+
+.lotus-footer-logo:focus-visible {
+  outline: 2px solid var(--lotus-primary);
+  outline-offset: 2px;
 }
 
 /* ------------------------------------------------------------------ *

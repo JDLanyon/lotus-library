@@ -4,7 +4,7 @@
   in a real `.svg` asset the consumer ships.
 -->
 <template>
-  <span :class="['lotus-icon', className]">
+  <span :class="['lotus-icon', className]" :style="style">
     <component :is="Image" :src="src" :alt="alt" :width="width" :height="height" />
   </span>
 </template>
@@ -19,6 +19,8 @@ withDefaults(
     className?: string;
     width?: number;
     height?: number;
+    /** Inline style applied to the wrapper (e.g. a theme-dependent filter). */
+    style?: Record<string, string | number>;
   }>(),
   {
     src: '/lotus.svg',

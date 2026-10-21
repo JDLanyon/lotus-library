@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { Button, Footer, Glitch, GlitchLink, TypeWriter } from '../src/react';
+import { Button, Footer, Glitch, GlitchLink, LotusIcon, TypeWriter } from '../src/react';
 
 /**
  * The static Storybook has no landing route of its own — opening
@@ -93,11 +93,10 @@ function Lotus() {
 
   return (
     <Glitch duration={3000} delay={16000}>
-      {/* A raw <img>: this is a static Storybook page, not a Next app, so
-          next/image's optimizer is not available. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/storybook/lotus.png"
+      <LotusIcon
+        // The packaged mark is near-white (#eee), so invert it on a light
+        // canvas; dark themes leave it as drawn.
+        className="lotus-welcome-mark"
         width={160}
         height={160}
         alt="lotus"
