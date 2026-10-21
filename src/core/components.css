@@ -851,28 +851,46 @@
   margin: 2rem auto;
 }
 
-/* The links row: a single line, never wrapping. If it cannot fit, the media
-   query below switches to a column with the lotus on top instead of letting
-   items pile up unevenly. */
+/* The links row: a single line on wide screens. Below the breakpoint it
+   becomes a vertical stack with the lotus on top. */
 .lotus-footer-row {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  /* The row is a flex child of `.lotus-footer` (a centred column), so without
+     this it shrinks to its smallest item instead of its widest child — the
+     stacked buttons then overflowed the row box (120px) even though they
+     looked fine, because the page was wide enough to hide it. */
+  max-width: 100%;
 }
 
-/* Too narrow for one row: stack vertically and lead with the lotus. */
-@media (max-width: 30rem) {
+/* Stack vertically on anything phone- or tablet-portrait sized. The breakpoint
+   is 48rem (not 30rem): a four-social row needs ~600px, so at 30rem the row
+   was still trying to sit side-by-side on most phones and squeezed the
+   icon/label pairs together. */
+@media (max-width: 48rem) {
   .lotus-footer-row {
     flex-direction: column;
     flex-wrap: nowrap;
+    width: auto;
+    gap: 0.5rem;
   }
 
   /* The glyph is rendered mid-row in DOM order, so pull it to the front
-     visually (and let its siblings fall in after it). */
-  .lotus-footer-logo {
+     visually. It is wrapped in `.lotus-tooltip`, which is the actual flex
+     child of the row — targeting `.lotus-footer-logo` had no effect because
+     the logo is not a direct child. */
+  .lotus-footer-row > .lotus-tooltip {
     order: -1;
+  }
+
+  /* Wider, centred buttons — the icon/label pair inside stays inline. */
+  .lotus-footer-row .lotus-footer-link {
+    width: 100%;
+    max-width: 20rem;
+    justify-content: center;
   }
 }
 
@@ -884,30 +902,48 @@
 }
 
 /* Footer links are Buttons (`.lotus-btn` + `.lotus-footer-link`). Keep the
-   button's layout/padding behaviour and only tint + align the contents. */
+   button's layout/padding behaviour and only tint the contents. */
 .lotus-footer-link {
   align-items: center;
-  gap: 0.5rem;
   color: var(--lotus-secondary);
   text-decoration: none;
 }
 
-/* Icon and label both shrink-to-fit and share the button's centre line. */
-.lotus-footer-link > svg {
-  display: block;
-  flex: 0 0 auto;
-  width: 1.1em;
-  height: 1.1em;
-}
-
-/* The label is a <span> (not a <p>) so it carries no default block margin, and
-   `line-height: 1` keeps the em-box tight enough that its centre matches the
-   icon's. A taller line box adds leading below the baseline, which is what
-   made the text sit off-centre against the glyph. */
-.lotus-footer-label {
-  margin: 0;
+/* Icon + label in a footer link.
+ *
+ * `Button` wraps children in nested spans, so the icon and the label do NOT
+ * share a flex parent we control — they end up on a shared text baseline,
+ * which is why the label sat low against the icon and why a `gap` on any of
+ * the wrappers spaced nothing. Rather than restyling that wrapper stack, the
+ * two leaf elements are laid out directly: inline-block, centred with each
+ * other via vertical-align, and separated with a margin on the label. */
+.lotus-footer-link .lotus-footer-label {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 0 0.5rem;
+  padding: 0;
   line-height: 1;
   font-size: 0.9rem;
+}
+
+.lotus-footer-link svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Desktop: icon stacked above the label. The label's left margin is dropped
+   and replaced with a top margin so the gap is vertical, not horizontal. */
+@media (min-width: 48rem) {
+  .lotus-footer-link .lotus-footer-label {
+    display: block;
+    margin: 0.5rem 0 0;
+    text-align: center;
+  }
+
+  .lotus-footer-link svg {
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 /* No underline: the button already has a hover fill, so an underlined label
