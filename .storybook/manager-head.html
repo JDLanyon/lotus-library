@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      Note: no <title> here. Storybook emits its own and appends this file
+      after it, so a second <title> would be invalid HTML. The title is set by
+      an inline script below (before paint) and kept in sync by manager.ts.
+    -->
+    <script>
+      // Runs before the manager bundle, so the tab is already correct on load.
+      // manager.ts then keeps it in sync as the user navigates between stories.
+      document.title = 'Lotus Library';
+    </script>
+    <!--
+      Manager chrome. The only CSS we need is for the brand logo: `brandImage`
+      in themes.ts can point at a file but cannot carry a `filter`.
+
+      The lotus PNG is a near-WHITE glyph, so light mode inverts it — the same
+      trick the jdlanyon.dev navbar uses (`filter: invert(var(--lotus-invert))`).
+
+      Storybook themes the manager with emotion at runtime and exposes no
+      stable DOM hook, so manager.ts sets `data-lotus-theme="light|dark"` on
+      <html>. That attribute is the only selector relied on here; the img is
+      matched by `src` rather than Storybook's generated class names.
+    -->
+    <style>
+      img[src*='lotus'] {
+        height: 26px;
+        width: auto;
+        transition: filter 120ms ease;
+      }
+
+      /* Light UI: invert the near-white glyph to near-black. */
+      html[data-lotus-theme='light'] img[src*='lotus'] {
+        filter: invert(1);
+      }
+
+      /* Dark UI: leave the glyph as authored. */
+      html[data-lotus-theme='dark'] img[src*='lotus'] {
+        filter: none;
+      }
+
+      /* The one-line Storybook credit registered in manager.ts. */
+      .lotus-storybook-credit:hover {
+        opacity: 1 !important;
+      }
+    </style>
+  </head>
+  <body></body>
+</html>
+

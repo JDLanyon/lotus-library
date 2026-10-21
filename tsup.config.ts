@@ -17,6 +17,12 @@ function withUseClient(file: string): void {
 /**
  * Build the React and Vue entry points, then concatenate the core + component
  * CSS into a single dist/lotus.css for one-line theming.
+ *
+ * NOTE ON ORDERING: tsup runs every config concurrently, so a CSS
+ * post-processing step must NOT live in `onSuccess` — the style step finishes
+ * ~60ms in while the Vue CSS lands ~2.7s later, so dist/vue/index.css would not
+ * exist yet. The Vue scoped CSS is folded in by `scripts/fold-vue-css.mjs`,
+ * which `build:lib` runs after tsup exits.
  */
 export default defineConfig([
   {
@@ -26,10 +32,17 @@ export default defineConfig([
     },
     format: ['esm', 'cjs'],
     tsconfig: './tsconfig.build.json',
-    dts: { compilerOptions: { incremental: false, noEmit: false, emitDeclarationOnly: true, declaration: true } },
+    dts: {
+      compilerOptions: {
+        incremental: false,
+        noEmit: false,
+        emitDeclarationOnly: true,
+        declaration: true,
+      },
+    },
     clean: true,
-  splitting: false,
-  sourcemap: true,
+    splitting: false,
+    sourcemap: true,
     treeshake: true,
     external: [
       'react',
@@ -51,16 +64,16 @@ export default defineConfig([
     esbuildOptions(options) {
       options.loader = { ...options.loader, '.css': 'empty' };
     },
-  // The React entry contains client-only components ('use client' in source).
-  // tsup/esbuild drops per-file directives when bundling, so re-emit the banner
-  // on the emitted bundles — otherwise a Next server component that imports the
-  // library evaluates it in the RSC runtime and crashes (React.useRef undefined).
-  async onSuccess() {
-    withUseClient(resolve('dist/react/index.js'));
-    withUseClient(resolve('dist/react/index.cjs'));
-    withUseClient(resolve('dist/react/next.js'));
-    withUseClient(resolve('dist/react/next.cjs'));
-    console.log('\u2713 added "use client" banner to dist/react');
+    // The React entry contains client-only components ('use client' in source).
+    // tsup/esbuild drops per-file directives when bundling, so re-emit the
+    // banner on the emitted bundles — otherwise a Next server component that
+    // imports the library evaluates it in the RSC runtime and crashes.
+    async onSuccess() {
+      withUseClient(resolve('dist/react/index.js'));
+      withUseClient(resolve('dist/react/index.cjs'));
+      withUseClient(resolve('dist/react/next.js'));
+      withUseClient(resolve('dist/react/next.cjs'));
+      console.log('\u2713 added "use client" banner to dist/react');
     },
   },
   {
@@ -78,13 +91,16 @@ export default defineConfig([
     },
   },
   {
+    /**
+     * Placeholder entry whose only job is to trigger CSS assembly. Its JS
+     * output goes to .tmp-style and is deleted; only dist/lotus.css is kept.
+     */
     entry: { 'style-entry': 'src/core/style-entry.ts' },
     format: ['esm'],
     dts: false,
     clean: false,
     esbuildOptions(options) {
       options.loader = { ...options.loader, '.css': 'empty' };
-      // Keep the placeholder bundle out of dist; only the CSS is shipped.
       options.outdir = '.tmp-style';
     },
     async onSuccess() {
@@ -103,7 +119,6 @@ export default defineConfig([
       mkdirSync(dirname(dest), { recursive: true });
       writeFileSync(dest, out);
 
-      // Remove the temporary placeholder JS bundle.
       const tmp = resolve('.tmp-style');
       if (existsSync(tmp)) rmSync(tmp, { recursive: true, force: true });
 
@@ -111,5 +126,3 @@ export default defineConfig([
     },
   },
 ]);
-
-

@@ -1,14 +1,14 @@
 import type { StorybookConfig } from '@storybook/nextjs-vite';
 
 /**
- * Static Storybook is served from a subpath on jdlanyon.dev
- * (https://jdlanyon.dev/lotus-library/). Set `STORYBOOK_BASE_PATH=/lotus-library`
- * when building for that host so asset URLs resolve; leave it unset for local
- * dev (served at the root).
+ * Static Storybook is served at the DOMAIN ROOT of
+ * https://lotus-library.jdlanyon.dev/ (Cloudflare Pages, output
+ * `storybook-static`). No subpath is involved, so no `base` override is
+ * needed — asset URLs resolve from `/`.
  */
-const BASE_PATH = process.env.STORYBOOK_BASE_PATH ?? '';
-
 const config: StorybookConfig = {
+  // The displayed name/logo/link chrome comes from the themes in themes.ts
+  // (brandTitle / brandImage / brandUrl), applied via manager.ts.
   "stories": [
     "../stories/**/*.mdx",
     "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"
@@ -21,14 +21,10 @@ const config: StorybookConfig = {
     "@storybook/addon-onboarding"
   ],
   "framework": "@storybook/nextjs-vite",
+  // `public/` is copied to the static root, so the brand glyphs are served
+  // from `/storybook/lotus-*.svg`.
   "staticDirs": [
     "../public"
-  ],
-  viteFinal(viteConfig) {
-    if (BASE_PATH) {
-      viteConfig.base = `${BASE_PATH.replace(/\/$/, '')}/`;
-    }
-    return viteConfig;
-  }
+  ]
 };
 export default config;

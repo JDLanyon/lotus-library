@@ -1,16 +1,16 @@
 # @jdlanyon/lotus-library
 
 [![CI](https://github.com/JDLanyon/lotus-library/actions/workflows/ci.yml/badge.svg)](https://github.com/JDLanyon/lotus-library/actions/workflows/ci.yml)
-[![Storybook](https://img.shields.io/badge/Storybook-live-e8892a)](https://jdlanyon.dev/lotus-library/)
+[![Storybook](https://img.shields.io/badge/Storybook-live-e8892a)](https://lotus-library.jdlanyon.dev/)
 ![React](https://img.shields.io/badge/React-%E2%9C%93-61dafb)
 ![Vue 3](https://img.shields.io/badge/Vue%203-%E2%9C%93-42b883)
 
-> ### ▶ [Open the live component showcase →](https://jdlanyon.dev/lotus-library/)
+> ### ▶ [Open the live component showcase →](https://lotus-library.jdlanyon.dev/)
 > Every component, prop and variant, rendered and interactive — no clone
 > required.
 
 <p align="center">
-  <a href="https://jdlanyon.dev/lotus-library/">
+  <a href="https://lotus-library.jdlanyon.dev/">
     <img src="docs/assets/hero.svg" alt="lotus-library — Card, Panel, Button, Tags, Glitch and Modal components for React and Vue 3" width="900">
   </a>
 </p>
@@ -465,21 +465,26 @@ npm run build-storybook  # static Storybook → storybook-static/
 
 ## Hosting the showcase (Storybook)
 
-The static Storybook is **deployed to GitHub Pages** by CI
-(`.github/workflows/ci.yml`, `storybook` job) on every push to `main`, built with
-`STORYBOOK_BASE_PATH=/lotus-library` so asset URLs resolve under a subpath. The
-deployed output is served at a subpath and can be fronted by a custom domain
-(e.g. `https://jdlanyon.dev/lotus-library/`) via DNS + a proxy such as
-Cloudflare.
+The static Storybook is deployed by **Cloudflare Pages on every push to
+`main`**, building `storybook-static/` and serving it at the **root** of
+<https://lotus-library.jdlanyon.dev/> — no subpath, so no `STORYBOOK_BASE_PATH`
+is needed.
 
-Requirements (one-time):
+- Build command: `npm run build-storybook`
+- Output directory: `storybook-static`
+- Node: 22 (see `.nvmrc`)
 
-- The repository is **public** (GitHub Pages is unavailable for private repos on
-  plans without Pages), and
-- **Settings → Pages → Source = "GitHub Actions"**.
+The site opens on a **landing page** (`stories/Welcome.stories.tsx`, titled
+`Overview/Welcome`) rather than redirecting into the docs — `preview.ts` sorts
+`Overview` first, so it is the default story.
 
-Until Pages is enabled the job is simply skipped/unavailable; the local
-`npm run build-storybook` still produces the same output for manual hosting.
+The old GitHub Pages job was removed from `ci.yml`; Cloudflare is the single
+source of truth. For a local preview of the exact deployed output:
+
+```bash
+npm run build-storybook
+npx http-server storybook-static
+```
 
 ## Releasing (manual)
 

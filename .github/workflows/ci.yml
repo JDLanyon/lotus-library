@@ -1,18 +1,17 @@
 name: CI
 
-# Every push and PR runs the checks. Pushes to `main` additionally build and
-# deploy the static Storybook to GitHub Pages.
+# Every push and PR runs the checks. Releases are performed MANUALLY from an
+# up-to-date `main` (see RELEASING in README.md); there is no automated release
+# job, so no bot commits or tags are ever pushed.
 #
-# Releases are performed MANUALLY from an up-to-date `main` (see RELEASING in
-# README.md). There is no automated release job, so no bot commits or tags are
-# ever pushed to the repository.
-
+# Storybook is deployed by Cloudflare Pages on push to `main`
+# (https://lotus-library.jdlanyon.dev/), NOT from this workflow. The old
+# GitHub Pages job was removed so there is a single source of truth.
 on:
   push:
     branches: ['**']
   pull_request:
 
-# Allow jobs to publish to GitHub Pages (Storybook hosting).
 permissions:
   contents: read
 
@@ -25,8 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
+          node-version: '22'
       - run: npm ci
       - name: Typecheck (React + Vue)
         run: npm run typecheck
@@ -37,38 +35,3 @@ jobs:
       - name: Build library
         run: npm run build:lib
 
-  storybook:
-    # Static Storybook hosted on GitHub Pages at
-    # https://jdlanyon.github.io/lotus-library/ — built on main after the checks
-    # pass. Routable from a custom domain later via Cloudflare. (Requires the
-    # repository to be public and Pages set to build from GitHub Actions.)
-    needs: check
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    concurrency:
-      group: pages
-      cancel-in-progress: true
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
-      - run: npm ci
-      - name: Build Storybook
-        env:
-          STORYBOOK_BASE_PATH: /lotus-library
-        run: npm run build-storybook
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: storybook-static
-      - id: deploy
-        uses: actions/deploy-pages@v4
