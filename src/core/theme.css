@@ -6,17 +6,15 @@
  * Colours are monochromatic by default; colour is reserved for the glitch
  * effects. Consumers can override these custom properties to re-theme.
  *
- * Font: the library ships NO font files and NO font-family of its own —
- * components intentionally INHERIT the host's font. `--lotus-font-sans` is an
- * OPTIONAL opt-in override: set it to any font stack/next-font var and every
- * lotus component uses it. Leave it unset and components simply inherit the
- * host's body font.
+ * Font: the library ships NO font files. Components default to a sans-serif
+ * stack (`--lotus-font-sans-default`) so they read consistently wherever they
+ * are dropped in. `--lotus-font-sans` is an override hook: point it at any font
+ * stack/next-font var and every lotus component uses it.
  *
- *   /* opt in to the host's own font *\/
+ *   /* use the host's own font instead *\/
  *   :root { --lotus-font-sans: var(--font-overpass-mono); }
  *
- * The library's original Poppins-first stack is available as
- * `--lotus-font-sans-default` if a host wants that exact look.
+ * Set `--lotus-font-sans: inherit` to fall back to the host's body font.
  */
 :root {
   --lotus-primary: #111;
@@ -24,8 +22,7 @@
   --lotus-background: #eee;
   --lotus-border-color: #ddd;
   --lotus-radius: 0px;
-  /* Not set by default => components inherit the host font.
-     Set to a stack to override, e.g. `var(--font-overpass-mono)`. */
+  /* The default stack components use. Override with `--lotus-font-sans`. */
   --lotus-font-sans-default: 'Poppins', 'Inter', 'Noto Sans', 'DejaVu Sans',
     'Liberation Sans', ui-sans-serif, system-ui, sans-serif;
 }
@@ -41,10 +38,14 @@
 
 /* Base font for lotus components.
  *
- * Components INHERIT the host font by default (we do not set a font-family).
- * `--lotus-font-sans` is an optional opt-in override: when a host defines it
- * (e.g. `:root { --lotus-font-sans: var(--font-merriweather) }`), every lotus
- * component picks it up via the `var(..., inherit)` fallback below. */
+ * Components default to a SANS-SERIF stack rather than inheriting the host
+ * font, so the library reads consistently wherever it is dropped in.
+ * `--lotus-font-sans` still overrides it (e.g.
+ * `:root { --lotus-font-sans: var(--font-merriweather) }`), and a host that
+ * wants the old behaviour can set `--lotus-font-sans: inherit`.
+ * Headings (h1-h6) are left alone: this selector deliberately lists component
+ * classes only, and `.lotus-project-content` typography opts headings back in
+ * below where the library owns the surrounding markup. */
 :where(
     .lotus-modal-container,
     .lotus-modal-signature,
@@ -65,7 +66,7 @@
     .lotus-embed,
     .lotus-project-content
   ) {
-  font-family: var(--lotus-font-sans, inherit);
+  font-family: var(--lotus-font-sans, var(--lotus-font-sans-default));
 }
 
 /* Utilities shared by every component. */

@@ -21,7 +21,7 @@ export interface NavLinkItem {
 
 export interface NavProps {
   links?: NavLinkItem[];
-  /** Path to the lotus logo in the public dir. Default `/lotus.svg`. */
+  /** Path to the lotus logo in the public dir. Default `/lotus.png`. */
   logoSrc?: string;
   /** Accessible label for the <nav>. Default "Primary". */
   ariaLabel?: string;
@@ -65,7 +65,7 @@ const DEFAULT_LINKS: NavLinkItem[] = [
  */
 export function Nav({
   links = DEFAULT_LINKS,
-  logoSrc = '/lotus.svg',
+  logoSrc = '/lotus.png',
   ariaLabel = 'Primary',
   className = '',
   glitchLinks = false,

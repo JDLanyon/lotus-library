@@ -4,8 +4,26 @@
   in a real `.svg` asset the consumer ships.
 -->
 <template>
-  <span :class="['lotus-icon', className]">
-    <component :is="Image" :src="src" :alt="alt" :width="width" :height="height" />
+  <span :class="['lotus-icon', className]" :style="style">
+    <!-- With `darkSrc` both images render and CSS shows one per theme. Only the
+         first carries the label so the mark is not announced twice. -->
+    <component
+      v-if="darkSrc"
+      :is="Image"
+      :src="darkSrc"
+      :alt="alt"
+      :width="width"
+      :height="height"
+      class="lotus-footer-logo-dark"
+    />
+    <component
+      :is="Image"
+      :src="src"
+      :alt="darkSrc ? '' : alt"
+      :width="width"
+      :height="height"
+      :class="darkSrc ? 'lotus-footer-logo-light' : undefined"
+    />
   </span>
 </template>
 
@@ -15,13 +33,17 @@ import { useAdapter } from './adapter';
 withDefaults(
   defineProps<{
     src?: string;
+    /** Dark-ink twin of `src`, shown on light themes (CSS picks per theme). */
+    darkSrc?: string;
     alt?: string;
     className?: string;
     width?: number;
     height?: number;
+    /** Inline style applied to the wrapper (e.g. a theme-dependent filter). */
+    style?: Record<string, string | number>;
   }>(),
   {
-    src: '/lotus.svg',
+    src: '/lotus.png',
     alt: 'Lotus',
     className: '',
     width: 64,

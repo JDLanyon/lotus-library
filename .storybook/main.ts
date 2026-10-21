@@ -21,8 +21,8 @@ const config: StorybookConfig = {
     "@storybook/addon-onboarding"
   ],
   "framework": "@storybook/nextjs-vite",
-  // `public/` is copied to the static root, so the brand glyphs are served
-  // from `/storybook/lotus-*.svg`.
+  // `public/` is copied to the static root, so it is served at `/` — the brand
+  // glyph is `/lotus.png` (both in dev and in the built Storybook).
   "staticDirs": [
     "../public"
   ]

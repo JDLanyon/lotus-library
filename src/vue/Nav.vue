@@ -80,7 +80,7 @@ const props = withDefaults(
   }>(),
   {
     links: () => DEFAULT_NAV_LINKS,
-    logoSrc: '/lotus.svg',
+    logoSrc: '/lotus.png',
     ariaLabel: 'Primary',
     layout: 'classic',
     className: '',

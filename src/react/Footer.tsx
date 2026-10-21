@@ -3,7 +3,10 @@
 import * as React from 'react';
 import type { LinkProps } from '../core/types';
 import { useAdapter } from './adapter';
-import { GlitchLink } from './GlitchLink';
+import { Button } from './Button';
+import { Glitch, type GlitchHandle } from './glitch/Glitch';
+import { LotusIcon } from './LotusIcon';
+import { Tooltip } from './Tooltip';
 /**
  * Icon dependencies are OPTIONAL peers. Only apps that render <Footer> need
  * `@icons-pack/react-simple-icons` (social glyphs). Imported normally and kept
@@ -20,8 +23,9 @@ export interface FooterProps {
   /** Extra class(es) appended to `.lotus-footer`. */
   className?: string;
   /**
-   * Render social links through <GlitchLink> (glitch-hover underline) instead
-   * of a bare adapter <Link>. Default false. Routing is preserved.
+   * @deprecated Footers are glitchless by design (a footer is a quiet, stable
+   * landmark). Hover still underlines the label. Accepted for back-compat and
+   * ignored.
    */
   glitchLinks?: boolean;
   /**
@@ -35,6 +39,16 @@ export interface FooterProps {
    * than in the block above.
    */
   extraSlot?: React.ReactNode;
+  /** Centre lotus glyph: where it links to. Defaults to the portfolio. */
+  logoHref?: string;
+  /** Accessible name + tooltip text for the centre lotus. */
+  logoLabel?: string;
+  /** Lotus image source. Defaults to the packaged `lotus.png`. */
+  logoSrc?: string;
+  /** Dark-ink lotus for light themes. Defaults to `lotus-dark.png`. */
+  logoDarkSrc?: string | null;
+  /** Hide the centre lotus entirely. */
+  hideLogo?: boolean;
 }
 
 const DEFAULT_LINKS = [
@@ -44,23 +58,83 @@ const DEFAULT_LINKS = [
   { href: 'https://www.instagram.com/sausytime/', icon: SiInstagram, label: 'Instagram' },
 ];
 
+/** Portfolios: the centre lotus is the quiet "this is mine" sign-off. */
+export const DEFAULT_LOGO_HREF = 'https://jdlanyon.dev';
+const DEFAULT_LOGO_SRC = '/lotus.png';
+/** Dark-ink twin of `lotus.png`: identical shape, artwork recoloured to #111. */
+const DEFAULT_LOGO_DARK_SRC = '/lotus-dark.png';
+
 /**
  * Site footer: an optional site-content block (children) above a centered,
- * wrapping row of social links plus an optional inline `extraSlot` (e.g. a
- * theme toggle). Opinionated by design — it references Jackson by default and
- * can be overridden via `links`. Styling lives in `.lotus-footer*`
- * (core components.css).
+ * wrapping row of social links, with a lotus glyph sitting in the middle of
+ * that row. Opinionated by design — it references Jackson by default and can
+ * be overridden via `links`. Styling lives in `.lotus-footer*` (core
+ * components.css).
+ *
+ * Buttons are deliberately GLITCHLESS: the footer is a stable landmark, and
+ * the only motion is the lotus, which glitches on hover.
  */
 export function Footer({
   landingPage = false,
   links = DEFAULT_LINKS,
   className = '',
-  glitchLinks = false,
   children,
   extraSlot,
+  logoHref = DEFAULT_LOGO_HREF,
+  logoLabel = 'jdlanyon.dev — portfolio',
+  logoSrc = DEFAULT_LOGO_SRC,
+  logoDarkSrc = DEFAULT_LOGO_DARK_SRC,
+  hideLogo = false,
 }: FooterProps) {
   const { Link } = useAdapter();
   const LinkComponent = Link as React.ComponentType<LinkProps>;
+  const glitchRef = React.useRef<GlitchHandle>(null);
+
+  // Split the row so the lotus lands in the visual centre regardless of how
+  // many links there are. With N links the glyph goes after ceil(N/2).
+  const midpoint = Math.ceil(links.length / 2);
+  const left = links.slice(0, midpoint);
+  const right = links.slice(midpoint);
+
+  const renderLink = ({ href, icon: Icon, label }: (typeof links)[number]) => (
+    <Button
+      key={href}
+      href={href}
+      targetBlank
+      glitchOnHover={false}
+      linkComponent={LinkComponent}
+      className="lotus-footer-link"
+    >
+      <Icon color="currentColor" />
+      <span className="lotus-footer-label">{label}</span>
+    </Button>
+  );
+
+  const logo = hideLogo ? null : (
+    <Tooltip text={logoLabel}>
+      <LinkComponent
+        href={logoHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="lotus-footer-logo"
+        aria-label={logoLabel}
+        onMouseEnter={() => glitchRef.current?.glitch()}
+        onFocus={() => glitchRef.current?.glitch()}
+      >
+        <Glitch ref={glitchRef} autoGlitch={false} duration={260}>
+          <LotusIcon
+            src={logoSrc}
+            darkSrc={logoDarkSrc ?? undefined}
+            alt=""
+            /* Match the CSS box; the artwork is 150x83, so not square. */
+            width={80}
+            height={44}
+            className="lotus-footer-logo-img"
+          />
+        </Glitch>
+      </LinkComponent>
+    </Tooltip>
+  );
 
   return (
     <footer
@@ -68,40 +142,10 @@ export function Footer({
     >
       {children}
       <div className="lotus-footer-row">
-      {links.map(({ href, icon: Icon, label }) => {
-        const inner = (
-          <>
-            <Icon color="var(--lotus-secondary)" />
-            <p>{label}</p>
-          </>
-        );
-
-        if (glitchLinks) {
-          return (
-            <GlitchLink
-              key={href}
-              href={href}
-              linkComponent={LinkComponent}
-              className="lotus-footer-link"
-            >
-              {inner}
-            </GlitchLink>
-          );
-        }
-
-        return (
-          <LinkComponent
-            key={href}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="lotus-footer-link"
-          >
-            {inner}
-          </LinkComponent>
-        );
-      })}
-      {extraSlot}
+        {left.map(renderLink)}
+        {logo}
+        {right.map(renderLink)}
+        {extraSlot}
       </div>
     </footer>
   );

@@ -9,7 +9,7 @@ const meta: Meta<typeof LotusIcon> = {
     docs: {
       description: {
         component:
-          'The lotus mark. Defaults to `/lotus.svg` — ship one in your public dir ' +
+          'The lotus mark. Defaults to `/lotus.png` — ship one in your public dir ' +
           'or pass `src`.',
       },
     },
