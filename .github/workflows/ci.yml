@@ -26,12 +26,15 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci
+      # Build before typechecking: src/react/next.tsx imports the package's own
+      # entry, which only resolves once dist/react/index.d.ts exists (see
+      # publish.yml). Typechecking first fails with TS2307 on a clean checkout.
+      - name: Build library
+        run: npm run build:lib
       - name: Typecheck (React + Vue)
         run: npm run typecheck
       - name: Lint
         run: npm run lint
       - name: Unit tests
         run: npm test
-      - name: Build library
-        run: npm run build:lib
 
