@@ -39,7 +39,7 @@
           @focus="logoRef?.glitch()"
         >
           <Glitch ref="logoRef" :auto-glitch="false" :duration="260">
-            <img :src="logoSrc" alt="" width="40" height="40" class="lotus-footer-logo-img" />
+            <LotusIcon :src="logoSrc" alt="" :width="40" :height="40" class="lotus-footer-logo-img" />
           </Glitch>
         </component>
       </Tooltip>
@@ -95,7 +95,7 @@ const props = withDefaults(
     glitchLinks: false,
     logoHref: 'https://jdlanyon.dev',
     logoLabel: 'jdlanyon.dev — portfolio',
-    logoSrc: '/storybook/lotus.png',
+    logoSrc: '/lotus.png',
     hideLogo: false,
   },
 );

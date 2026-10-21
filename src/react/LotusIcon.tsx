@@ -7,7 +7,7 @@ import { useAdapter } from './adapter';
 export interface LotusIconProps {
   /**
    * Path to the lotus mark. Defaults to the packaged asset
-   * (`/lotus.svg`); override to point at your own file.
+   * (`/lotus.png`); override to point at your own file.
    */
   src?: string;
   /** Accessible label. Default "Lotus". */
@@ -27,7 +27,7 @@ export interface LotusIconProps {
  * components.css).
  */
 export function LotusIcon({
-  src = '/lotus.svg',
+  src = '/lotus.png',
   alt = 'Lotus',
   className = '',
   width = 64,

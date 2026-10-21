@@ -917,12 +917,20 @@
   display: block;
   width: 40px;
   height: 40px;
-  object-fit: contain;
   /* The artwork is near-WHITE (#eee). Invert by default so it reads dark on a
      light canvas; the dark-theme rule below cancels that so it stays #eee. */
   filter: invert(1);
   opacity: 0.85;
   transition: filter 120ms ease, opacity 120ms ease;
+}
+
+/* LotusIcon renders <span class="lotus-icon lotus-footer-logo-img"><img></span>,
+   so size the inner image to the span. */
+.lotus-footer-logo-img > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* Dark themes: show the artwork as drawn (#eee). */

@@ -5,6 +5,7 @@ import type { LinkProps } from '../core/types';
 import { useAdapter } from './adapter';
 import { Button } from './Button';
 import { Glitch, type GlitchHandle } from './glitch/Glitch';
+import { LotusIcon } from './LotusIcon';
 import { Tooltip } from './Tooltip';
 /**
  * Icon dependencies are OPTIONAL peers. Only apps that render <Footer> need
@@ -57,7 +58,7 @@ const DEFAULT_LINKS = [
 
 /** Portfolios: the centre lotus is the quiet "this is mine" sign-off. */
 export const DEFAULT_LOGO_HREF = 'https://jdlanyon.dev';
-const DEFAULT_LOGO_SRC = '/storybook/lotus.png';
+const DEFAULT_LOGO_SRC = '/lotus.png';
 
 /**
  * Site footer: an optional site-content block (children) above a centered,
@@ -116,8 +117,7 @@ export function Footer({
         onFocus={() => glitchRef.current?.glitch()}
       >
         <Glitch ref={glitchRef} autoGlitch={false} duration={260}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <LotusIcon
             src={logoSrc}
             alt=""
             width={40}

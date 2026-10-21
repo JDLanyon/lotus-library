@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { Button, Footer, Glitch, GlitchLink, LotusIcon, TypeWriter } from '../src/react';
+import { Button, Footer, Glitch, GlitchImage, GlitchLink, TypeWriter } from '../src/react';
 
 /**
  * The static Storybook has no landing route of its own — opening
@@ -92,25 +92,18 @@ function Lotus() {
   const dark = useResolvedTheme() === 'dark';
 
   return (
-    <Glitch duration={3000} delay={16000}>
-      <LotusIcon
-
-
-        // The mark is a large SVG (as on sausytime.com / jdlanyon.dev), drawn
-        // near-white (#eee), so invert it on a light canvas.
-        className="lotus-welcome-mark"
-        src="/lotus.svg"
-        width={160}
-        height={160}
-        alt="lotus"
-        style={{
-          display: 'block',
-          margin: '1rem auto',
-          filter: dark ? 'none' : 'invert(1)',
-          transition: 'filter 120ms ease',
-        }}
-      />
-    </Glitch>
+    <div className="hero-lotus">
+      <GlitchImage duration={300} delay={3000} variance={2000} intensity={1.5}>
+        {/* Plain <img>, as on jdlanyon.dev: the hero mark is a static asset. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/lotus.svg"
+          alt="lotus"
+          className="lotus-hero-img"
+          style={{ filter: dark ? 'none' : 'invert(1)' }}
+        />
+      </GlitchImage>
+    </div>
   );
 }
 

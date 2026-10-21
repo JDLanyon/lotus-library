@@ -48,6 +48,10 @@ addons.setConfig({
   theme: resolveTheme(currentMode),
   // Sidebar: show top-level groups as folders rather than roots.
   sidebar: { showRoots: false },
+  // Hide the bottom panel on load: Actions / Interactions / Visual tests /
+  // Accessibility are all empty unless a story opts in.
+  showPanel: false,
+  panelPosition: 'bottom',
 });
 applyChrome(currentMode);
 

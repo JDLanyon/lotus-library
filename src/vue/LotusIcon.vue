@@ -23,7 +23,7 @@ withDefaults(
     style?: Record<string, string | number>;
   }>(),
   {
-    src: '/lotus.svg',
+    src: '/lotus.png',
     alt: 'Lotus',
     className: '',
     width: 64,
