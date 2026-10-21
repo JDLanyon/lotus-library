@@ -14,18 +14,18 @@
   <footer :class="['lotus-footer', { 'is-landing': landingPage }, className]">
     <slot />
     <div class="lotus-footer-row">
-      <component
-        :is="Link"
+      <Button
         v-for="s in leftLinks"
         :key="s.href"
         :href="s.href"
-        target="_blank"
-        rel="noopener noreferrer"
+        target-blank
+        :glitch-on-hover="false"
+        :link-component="Link"
         class="lotus-footer-link"
       >
-        <component :is="s.icon" color="var(--lotus-secondary)" />
+        <component :is="s.icon" color="currentColor" />
         <span class="lotus-footer-label">{{ s.label }}</span>
-      </component>
+      </Button>
 
       <Tooltip v-if="!hideLogo" :text="logoLabel">
         <component
@@ -39,23 +39,23 @@
           @focus="logoRef?.glitch()"
         >
           <Glitch ref="logoRef" :auto-glitch="false" :duration="260">
-            <LotusIcon :src="logoSrc" alt="" :width="40" :height="40" class="lotus-footer-logo-img" />
+            <img :src="logoSrc" alt="" width="40" height="40" class="lotus-footer-logo-img" />
           </Glitch>
         </component>
       </Tooltip>
 
-      <component
-        :is="Link"
+      <Button
         v-for="s in rightLinks"
         :key="s.href"
         :href="s.href"
-        target="_blank"
-        rel="noopener noreferrer"
+        target-blank
+        :glitch-on-hover="false"
+        :link-component="Link"
         class="lotus-footer-link"
       >
-        <component :is="s.icon" color="var(--lotus-secondary)" />
+        <component :is="s.icon" color="currentColor" />
         <span class="lotus-footer-label">{{ s.label }}</span>
-      </component>
+      </Button>
 
       <slot name="extra" />
     </div>
@@ -67,8 +67,9 @@ import { computed, ref, useTemplateRef } from 'vue';
 import { useAdapter } from './adapter';
 import { DEFAULT_FOOTER_LINKS, type FooterLink } from './defaults';
 import Glitch from './glitch/Glitch.vue';
-import LotusIcon from './LotusIcon.vue';
+import Button from './Button.vue';
 import Tooltip from './Tooltip.vue';
+import LotusIcon from './LotusIcon.vue';
 export type { FooterLink };
 
 const props = withDefaults(
@@ -94,7 +95,7 @@ const props = withDefaults(
     glitchLinks: false,
     logoHref: 'https://jdlanyon.dev',
     logoLabel: 'jdlanyon.dev — portfolio',
-    logoSrc: '/lotus.svg',
+    logoSrc: '/storybook/lotus.png',
     hideLogo: false,
   },
 );
@@ -107,4 +108,5 @@ const logoRef = useTemplateRef<{ glitch: () => void }>('logoRef');
 const leftLinks = computed(() => props.links.slice(0, Math.ceil(props.links.length / 2)));
 const rightLinks = computed(() => props.links.slice(Math.ceil(props.links.length / 2)));
 </script>
+
 

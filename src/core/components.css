@@ -866,14 +866,21 @@
   right: 0;
 }
 
+/* Footer links are Buttons (`.lotus-btn` + `.lotus-footer-link`). Keep the
+   button's layout/padding behaviour and only tint + align the contents. */
 .lotus-footer-link {
-  display: inline-flex;
-  /* Vertical centring of icon vs. label is the whole point of this rule. */
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem;
   color: var(--lotus-secondary);
   text-decoration: none;
+}
+
+/* Icon and label both shrink-to-fit and share the button's centre line. */
+.lotus-footer-link > svg {
+  display: block;
+  flex: 0 0 auto;
+  width: 1.1em;
+  height: 1.1em;
 }
 
 /* The label is a <span> (not a <p>) so it carries no default block margin, and
@@ -886,18 +893,10 @@
   font-size: 0.9rem;
 }
 
-/* Keep the icon from being the taller of the two (e.g. a lucide SVG with a
-   different intrinsic box) so the pair centres predictably. */
-.lotus-footer-link > svg {
-  display: block;
-  flex: 0 0 auto;
-  width: 1.1em;
-  height: 1.1em;
-}
-
+/* No underline: the button already has a hover fill, so an underlined label
+   would be a second, competing affordance. */
 .lotus-footer-link:hover .lotus-footer-label {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
 }
 
 /* Centre lotus: the only element in the footer that glitches. Kept small so it
@@ -915,28 +914,28 @@
 /* LotusIcon renders <span.lotus-icon.lotus-footer-logo-img><img></span>, so the
    filter lives on the span and the box size on the img. */
 .lotus-footer-logo-img {
-  display: inline-flex;
+  display: block;
   width: 40px;
   height: 40px;
-  /* The lotus artwork is near-WHITE (#eee). On a light canvas that is
-     invisible, so invert it; dark themes leave it as drawn. */
+  object-fit: contain;
+  /* The artwork is near-WHITE (#eee). Invert by default so it reads dark on a
+     light canvas; the dark-theme rule below cancels that so it stays #eee. */
   filter: invert(1);
-  opacity: 0.75;
+  opacity: 0.85;
   transition: filter 120ms ease, opacity 120ms ease;
 }
 
+/* Dark themes: show the artwork as drawn (#eee). */
 [data-theme='dark'] .lotus-footer-logo-img,
 .lotus-dark .lotus-footer-logo-img,
 .dark .lotus-footer-logo-img {
   filter: none;
 }
 
-/* Hover restores full opacity and lifts the glyph to --lotus-primary, so it
-   responds visibly in both polarities. */
+/* Hover/focus only brightens — the tint stays theme-correct. */
 .lotus-footer-logo:hover .lotus-footer-logo-img,
 .lotus-footer-logo:focus-visible .lotus-footer-logo-img {
   opacity: 1;
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lotus-primary) 45%, transparent));
 }
 
 .lotus-footer-logo:focus-visible {

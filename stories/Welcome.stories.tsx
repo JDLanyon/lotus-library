@@ -94,9 +94,12 @@ function Lotus() {
   return (
     <Glitch duration={3000} delay={16000}>
       <LotusIcon
-        // The packaged mark is near-white (#eee), so invert it on a light
-        // canvas; dark themes leave it as drawn.
+
+
+        // The mark is a large SVG (as on sausytime.com / jdlanyon.dev), drawn
+        // near-white (#eee), so invert it on a light canvas.
         className="lotus-welcome-mark"
+        src="/lotus.svg"
         width={160}
         height={160}
         alt="lotus"

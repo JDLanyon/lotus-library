@@ -3,8 +3,8 @@
 import * as React from 'react';
 import type { LinkProps } from '../core/types';
 import { useAdapter } from './adapter';
+import { Button } from './Button';
 import { Glitch, type GlitchHandle } from './glitch/Glitch';
-import { LotusIcon } from './LotusIcon';
 import { Tooltip } from './Tooltip';
 /**
  * Icon dependencies are OPTIONAL peers. Only apps that render <Footer> need
@@ -57,7 +57,7 @@ const DEFAULT_LINKS = [
 
 /** Portfolios: the centre lotus is the quiet "this is mine" sign-off. */
 export const DEFAULT_LOGO_HREF = 'https://jdlanyon.dev';
-const DEFAULT_LOGO_SRC = '/lotus.svg';
+const DEFAULT_LOGO_SRC = '/storybook/lotus.png';
 
 /**
  * Site footer: an optional site-content block (children) above a centered,
@@ -91,16 +91,17 @@ export function Footer({
   const right = links.slice(midpoint);
 
   const renderLink = ({ href, icon: Icon, label }: (typeof links)[number]) => (
-    <LinkComponent
+    <Button
       key={href}
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
+      targetBlank
+      glitchOnHover={false}
+      linkComponent={LinkComponent}
       className="lotus-footer-link"
     >
-      <Icon color="var(--lotus-secondary)" />
+      <Icon color="currentColor" />
       <span className="lotus-footer-label">{label}</span>
-    </LinkComponent>
+    </Button>
   );
 
   const logo = hideLogo ? null : (
@@ -115,7 +116,14 @@ export function Footer({
         onFocus={() => glitchRef.current?.glitch()}
       >
         <Glitch ref={glitchRef} autoGlitch={false} duration={260}>
-          <LotusIcon src={logoSrc} alt="" width={40} height={40} className="lotus-footer-logo-img" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={logoSrc}
+            alt=""
+            width={40}
+            height={40}
+            className="lotus-footer-logo-img"
+          />
         </Glitch>
       </LinkComponent>
     </Tooltip>
@@ -137,3 +145,4 @@ export function Footer({
 }
 
 export default Footer;
+
