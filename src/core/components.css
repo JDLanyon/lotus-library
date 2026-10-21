@@ -167,7 +167,9 @@
   border-radius: var(--lotus-radius);
   color: var(--lotus-primary);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .lotus-modal-close:hover {
@@ -275,7 +277,7 @@
    from under the cursor (that self-displacement caused a hover flicker at the
    bottom edge). The visual lifts; the hit area stays put. */
 .lotus-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -6px;
   z-index: -1;
@@ -671,6 +673,21 @@
 }
 
 /* ------------------------------------------------------------------ *
+ * Hero lotus (landing story)
+ *
+ * The HERO mark is the SVG — same as jdlanyon.dev / sausytime.com. Its viewBox
+ * is square (1080x1080), so it renders square. This rule only needs to keep it
+ * at a sensible size; the light/dark tint is applied inline by the story, which
+ * is where the resolved theme is known.
+ * ------------------------------------------------------------------ */
+.lotus-hero-img {
+  display: block;
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+}
+
+/* ------------------------------------------------------------------ *
  * Embed (responsive 16:9 YouTube)
  * ------------------------------------------------------------------ */
 .lotus-embed {
@@ -911,38 +928,75 @@
   line-height: 0;
 }
 
-/* LotusIcon renders <span.lotus-icon.lotus-footer-logo-img><img></span>, so the
-   filter lives on the span and the box size on the img. */
-.lotus-footer-logo-img {
+/* Two classes are needed to beat the base `.lotus-icon` inline-flex. The PNG's
+   artwork fills only 150x83 of its 150x150 canvas, so size it non-square (80x44)
+   or it letterboxes. Colours come from the two asset files, not a filter. */
+.lotus-icon.lotus-footer-logo-img {
+  position: relative; /* context for the overlaid images below */
   display: block;
-  width: 40px;
-  height: 40px;
-  /* The artwork is near-WHITE (#eee). Invert by default so it reads dark on a
-     light canvas; the dark-theme rule below cancels that so it stays #eee. */
-  filter: invert(1);
+  flex: 0 0 auto;
+  width: 80px;
+  height: 44px;
   opacity: 0.85;
-  transition: filter 120ms ease, opacity 120ms ease;
+  transition: opacity 120ms ease;
 }
 
-/* LotusIcon renders <span class="lotus-icon lotus-footer-logo-img"><img></span>,
-   so size the inner image to the span. */
-.lotus-footer-logo-img > img {
+/* Stack both images in one box: `visibility: hidden` still occupies flow, so
+   laying them out in sequence doubled the footer row's height. */
+.lotus-icon.lotus-footer-logo-img > img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* Dark themes: show the artwork as drawn (#eee). */
-[data-theme='dark'] .lotus-footer-logo-img,
-.lotus-dark .lotus-footer-logo-img,
-.dark .lotus-footer-logo-img {
-  filter: none;
+/* Default: dark ink on light canvases. */
+.lotus-icon.lotus-footer-logo-img > img.lotus-footer-logo-dark {
+  visibility: visible;
 }
 
-/* Hover/focus only brightens — the tint stays theme-correct. */
-.lotus-footer-logo:hover .lotus-footer-logo-img,
-.lotus-footer-logo:focus-visible .lotus-footer-logo-img {
+.lotus-icon.lotus-footer-logo-img > img.lotus-footer-logo-light {
+  visibility: hidden;
+}
+
+/* Dark canvases show the near-white artwork. `system` mode only rewrites the
+   tokens via `prefers-color-scheme`, so it has no `data-theme="dark"` to match —
+   hence the media query. */
+@media (prefers-color-scheme: dark) {
+  .lotus-sb-canvas[data-theme="system"]
+    .lotus-footer-logo-img
+    > img.lotus-footer-logo-dark {
+    visibility: hidden;
+  }
+
+  .lotus-sb-canvas[data-theme="system"]
+    .lotus-footer-logo-img
+    > img.lotus-footer-logo-light {
+    visibility: visible;
+  }
+}
+
+[data-theme="dark"]
+  .lotus-icon.lotus-footer-logo-img
+  > img.lotus-footer-logo-dark,
+.lotus-dark .lotus-icon.lotus-footer-logo-img > img.lotus-footer-logo-dark,
+.dark .lotus-icon.lotus-footer-logo-img > img.lotus-footer-logo-dark {
+  visibility: hidden;
+}
+
+[data-theme="dark"]
+  .lotus-icon.lotus-footer-logo-img
+  > img.lotus-footer-logo-light,
+.lotus-dark .lotus-icon.lotus-footer-logo-img > img.lotus-footer-logo-light,
+.dark .lotus-icon.lotus-footer-logo-img > img.lotus-footer-logo-light {
+  visibility: visible;
+}
+
+/* Hover/focus: opacity only (no filter to animate through black). */
+.lotus-footer-logo:hover .lotus-icon.lotus-footer-logo-img,
+.lotus-footer-logo:focus-visible .lotus-icon.lotus-footer-logo-img {
   opacity: 1;
 }
 

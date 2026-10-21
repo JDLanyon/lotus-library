@@ -94,13 +94,18 @@ function Lotus() {
   return (
     <div className="hero-lotus">
       <GlitchImage duration={300} delay={3000} variance={2000} intensity={1.5}>
-        {/* Plain <img>, as on jdlanyon.dev: the hero mark is a static asset. */}
+        {/* The HERO mark is the SVG (like jdlanyon.dev / sausytime.com); the
+            PNG is the small brand/footer glyph. The SVG glyph is near-WHITE
+            (#eee), so only a light canvas needs a tint — and a full invert(1)
+            crushes it to near-black, so invert to mid-grey instead. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/lotus.svg"
           alt="lotus"
+          width={220}
+          height={220}
           className="lotus-hero-img"
-          style={{ filter: dark ? 'none' : 'invert(1)' }}
+          style={{ filter: dark ? 'none' : 'invert(0.78)' }}
         />
       </GlitchImage>
     </div>

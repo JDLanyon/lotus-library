@@ -39,7 +39,15 @@
           @focus="logoRef?.glitch()"
         >
           <Glitch ref="logoRef" :auto-glitch="false" :duration="260">
-            <LotusIcon :src="logoSrc" alt="" :width="40" :height="40" class="lotus-footer-logo-img" />
+            <!-- 80x44 matches the CSS box and the artwork's 150x83 ratio. -->
+            <LotusIcon
+              :src="logoSrc"
+              :dark-src="logoDarkSrc ?? undefined"
+              alt=""
+              :width="80"
+              :height="44"
+              class="lotus-footer-logo-img"
+            />
           </Glitch>
         </component>
       </Tooltip>
@@ -85,6 +93,8 @@ const props = withDefaults(
     logoLabel?: string;
     /** Lotus image source. */
     logoSrc?: string;
+    /** Dark-ink lotus shown on light themes. Defaults to `lotus-dark.png`. */
+    logoDarkSrc?: string | null;
     /** Hide the centre lotus entirely. */
     hideLogo?: boolean;
   }>(),
@@ -96,6 +106,7 @@ const props = withDefaults(
     logoHref: 'https://jdlanyon.dev',
     logoLabel: 'jdlanyon.dev — portfolio',
     logoSrc: '/lotus.png',
+    logoDarkSrc: '/lotus-dark.png',
     hideLogo: false,
   },
 );
@@ -108,5 +119,4 @@ const logoRef = useTemplateRef<{ glitch: () => void }>('logoRef');
 const leftLinks = computed(() => props.links.slice(0, Math.ceil(props.links.length / 2)));
 const rightLinks = computed(() => props.links.slice(Math.ceil(props.links.length / 2)));
 </script>
-
 

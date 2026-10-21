@@ -10,6 +10,11 @@ export interface LotusIconProps {
    * (`/lotus.png`); override to point at your own file.
    */
   src?: string;
+  /**
+   * Dark-ink twin of `src`, shown on light themes. When set, both images render
+   * and CSS shows one per theme (`[data-theme='dark']`, `.lotus-dark`, `.dark`).
+   */
+  darkSrc?: string;
   /** Accessible label. Default "Lotus". */
   alt?: string;
   /** Extra class(es) appended to `.lotus-icon`. */
@@ -24,10 +29,12 @@ export interface LotusIconProps {
  * The lotus mark. Renders an <img> through the adapter (so a Next host gets
  * `next/image`) rather than inlining SVG paths — the artwork lives in a real
  * asset the consumer ships. Styling lives in `.lotus-icon` (core
- * components.css).
+ * components.css). With `darkSrc`, two images render and CSS shows one per
+ * theme.
  */
 export function LotusIcon({
   src = '/lotus.png',
+  darkSrc,
   alt = 'Lotus',
   className = '',
   width = 64,
@@ -39,7 +46,23 @@ export function LotusIcon({
 
   return (
     <span className={`lotus-icon ${className}`.trim()} style={style}>
-      <ImageComponent src={src} alt={alt} width={width} height={height} />
+      {darkSrc ? (
+        // Label only one of the two so the mark is not announced twice.
+        <ImageComponent
+          src={darkSrc}
+          alt={alt}
+          width={width}
+          height={height}
+          className="lotus-footer-logo-dark"
+        />
+      ) : null}
+      <ImageComponent
+        src={src}
+        alt={darkSrc ? '' : alt}
+        width={width}
+        height={height}
+        className={darkSrc ? 'lotus-footer-logo-light' : undefined}
+      />
     </span>
   );
 }

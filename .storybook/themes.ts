@@ -19,8 +19,12 @@ export const BRAND = {
    * The lotus glyph — the same asset the jdlanyon.dev / sausytime.com navbars
    * use. It is near-WHITE (#fbf8f8), so light mode inverts it; that lives in
    * manager-head.html because `brandImage` cannot carry CSS.
+   *
+   * Public assets live at `/` in both `npm run storybook` and the static build
+   * (no `base` override in main.ts), so this is the one canonical copy —
+   * `public/storybook/lotus.png` was a duplicate that 404'd.
    */
-  logo: '/storybook/lotus.png',
+  logo: '/lotus.png',
 } as const;
 
 

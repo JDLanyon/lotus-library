@@ -45,6 +45,8 @@ export interface FooterProps {
   logoLabel?: string;
   /** Lotus image source. Defaults to the packaged `lotus.png`. */
   logoSrc?: string;
+  /** Dark-ink lotus for light themes. Defaults to `lotus-dark.png`. */
+  logoDarkSrc?: string | null;
   /** Hide the centre lotus entirely. */
   hideLogo?: boolean;
 }
@@ -59,6 +61,8 @@ const DEFAULT_LINKS = [
 /** Portfolios: the centre lotus is the quiet "this is mine" sign-off. */
 export const DEFAULT_LOGO_HREF = 'https://jdlanyon.dev';
 const DEFAULT_LOGO_SRC = '/lotus.png';
+/** Dark-ink twin of `lotus.png`: identical shape, artwork recoloured to #111. */
+const DEFAULT_LOGO_DARK_SRC = '/lotus-dark.png';
 
 /**
  * Site footer: an optional site-content block (children) above a centered,
@@ -79,6 +83,7 @@ export function Footer({
   logoHref = DEFAULT_LOGO_HREF,
   logoLabel = 'jdlanyon.dev — portfolio',
   logoSrc = DEFAULT_LOGO_SRC,
+  logoDarkSrc = DEFAULT_LOGO_DARK_SRC,
   hideLogo = false,
 }: FooterProps) {
   const { Link } = useAdapter();
@@ -119,9 +124,11 @@ export function Footer({
         <Glitch ref={glitchRef} autoGlitch={false} duration={260}>
           <LotusIcon
             src={logoSrc}
+            darkSrc={logoDarkSrc ?? undefined}
             alt=""
-            width={40}
-            height={40}
+            /* Match the CSS box; the artwork is 150x83, so not square. */
+            width={80}
+            height={44}
             className="lotus-footer-logo-img"
           />
         </Glitch>
